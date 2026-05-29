@@ -1,7 +1,7 @@
 interface:
   display_name: "Campaign Build Orchestrator"
-  short_description: "Coordinate strategy, page, visual, and QA skills"
+  short_description: "Coordinate strategy and page-building skills"
   brand_color: "#2563EB"
-  default_prompt: "Use $campaign-build-orchestrator to turn this campaign idea into a structured multi-skill execution plan."
+  default_prompt: "Use $campaign-build-orchestrator to turn this campaign idea into a CampaignRequest, route it through strategy planning, and hand it to page building."
 policy:
   allow_implicit_invocation: true

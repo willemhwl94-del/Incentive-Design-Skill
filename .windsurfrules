@@ -1,0 +1,15 @@
+Use this repository as a portable Agent Skill package for mobile incentive campaign H5 pages.
+
+Required reading order:
+1. SKILL.md
+2. AGENTS.md
+3. skills/vibe-activity-page/SKILL.md
+4. component-library/README.md
+
+For one-line campaign planning, also read:
+- docs/campaign-skill-suite-protocol.md
+- skills/campaign-build-orchestrator/SKILL.md
+- skills/incentive-strategy-planner/SKILL.md
+
+New runnable campaign cases belong in:
+/Users/bytedance/Documents/Incentive Page Cases/{case-name}/

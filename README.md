@@ -1,154 +1,173 @@
-# Incentive Design Skill
+# Incentive Design Agent Skill
 
-面向移动端激励活动页的可复用设计与构建 Skill。它不是某一个活动页面项目，而是一套给 AI Agent 使用的活动页生产知识库：包含活动策略拆解、页面框架、组件契约、Figma 还原规则、视觉资产规则、H5 实现规范和 QA 清单。
+`incentive-design-agent-skill` is a portable AI Agent skill package for planning, designing, and building mobile-first incentive campaign H5 pages.
 
-这个仓库可以被 Codex 使用，也可以被 Claude Code、Cursor Agent、Cline、Continue、自研 Agent、脚本化构建器或任何能读取本地文件的 AI 编码 Agent 使用。
+It can be used by Codex, Claude Code, Cursor Agent, Windsurf, Cline, Continue, or any custom file-reading agent. The package is not a single campaign project. It is a reusable knowledge base that helps an agent turn a business request into a campaign strategy, a page framework, reusable components, H5 code, and QA checks.
 
-默认产物是移动端 H5 活动页。除非用户明确要求 React、Vue、Tailwind 或其他技术栈，否则优先使用原生 HTML/CSS/JavaScript。
+Default output: mobile H5 page with HTML, CSS, and JavaScript.
 
-## 适用场景
+Use React, Vue, Tailwind CSS, or another stack only when the target project already uses that stack or the user explicitly asks for it.
 
-适合用于：
+## What This Skill Is For
 
-- 沉睡用户召回活动
-- 新用户激励活动
-- 每日任务 / 签到 / 浏览任务活动
-- 邀请裂变和好友助力活动
-- 抽奖、盲盒、转盘、刮刮卡等玩法页
-- 进度积累、提现、积分兑换活动
-- 陪伴养成、储蓄罐、成长路径类长周期活动
+Use this package for:
 
-不适合用于：
+- Dormant user recall campaigns
+- New-user reward campaigns
+- Daily task, check-in, browse-to-earn, and watch-to-earn pages
+- Invite, referral, friend-help, and contribution campaigns
+- Lucky box, spin wheel, scratch card, draw machine, and other single-gameplay pages
+- Progress accumulation, cash-out, points, and exchange campaigns
+- Companion nurturing, savings jar, and long-cycle growth pages
 
-- 纯品牌长文页
-- 无激励机制的普通营销落地页
-- 完全依赖后端复杂状态机的生产系统
-- 已经有完整产品设计系统且不能使用本仓库组件规范的项目
+Avoid using it for:
 
-## 给 Agent 的使用方式
+- Pure brand articles or long-form landing pages
+- Pages without incentive mechanics
+- Backend-heavy production systems where the frontend has no meaningful campaign state
+- Projects that already have a strict product design system that must override this component library
 
-不同 Agent 不需要“安装”这个仓库才能使用它。只要能读取文件，就可以把它当作活动页设计与代码生成规范。
+## How Agents Should Use It
 
-### Codex 使用方式
+The package works by progressive disclosure. Agents should not load every file at once. Read the entry file first, then load only the workflow, page framework, component, or contract files needed for the current task.
 
-Codex 会自动读取 `AGENTS.md`。在开始创建、重构或评审活动页前，应优先阅读：
+### Minimum Context For Any Agent
+
+For any campaign page task, read:
 
 ```txt
+SKILL.md
 AGENTS.md
 skills/vibe-activity-page/SKILL.md
+skills/vibe-activity-page/references/components.md
 ```
 
-如果用户只给一句业务需求，按完整链路执行：
+If the user only gives a one-line business request, also read:
 
 ```txt
 docs/campaign-skill-suite-protocol.md
 skills/campaign-build-orchestrator/SKILL.md
 skills/incentive-strategy-planner/SKILL.md
-skills/vibe-activity-page/SKILL.md
 ```
 
-### 其他 Agent 使用方式
-
-对 Claude Code、Cursor Agent、Cline、Continue 或自研 Agent，可以在系统提示词或项目规则里加入：
+If the task asks to use or restore a reusable component, read:
 
 ```txt
-你正在使用 Incentive Design Skill 仓库。
-在创建、修改或评审移动端激励活动页前，先读取：
-1. AGENTS.md
-2. skills/vibe-activity-page/SKILL.md
-3. skills/vibe-activity-page/references/components.md
-4. 对应页面框架文件，例如：
-   skills/vibe-activity-page/references/page-structures/nurture-progress-conversion-page.md
-
-默认输出 H5 页面。
-新活动案例不要写入 Skill 仓库，必须创建在：
-/Users/bytedance/Documents/Incentive Page Cases/{case-name}/
-
-开发任何模块前，先检查 component-library/components/。
-业务数据必须放在页面 config 中。
-组件尺寸和 Figma 约束以 component-library/components/{component}/component.md 为准。
+component-library/README.md
+component-library/components/{component}/component.md
 ```
 
-如果 Agent 不支持多文件自动检索，可以把以下最小上下文喂给它：
+### Codex
+
+Codex should start from:
 
 ```txt
 AGENTS.md
+SKILL.md
 skills/vibe-activity-page/SKILL.md
-skills/vibe-activity-page/references/components.md
-目标页面框架 markdown
-需要使用的组件 component.md
 ```
 
-### 自研 Agent 集成方式
-
-自研 Agent 可以把本仓库当作三层知识库：
+For a one-line request, Codex should follow:
 
 ```txt
-Request Layer
-  contracts/
-  docs/campaign-skill-suite-protocol.md
-
-Planning Layer
-  skills/campaign-build-orchestrator/
-  skills/incentive-strategy-planner/
-
-Page Build Layer
-  skills/vibe-activity-page/
-  component-library/components/
+campaign-build-orchestrator
+↓
+incentive-strategy-planner
+↓
+vibe-activity-page
+↓
+final H5 page
 ```
 
-推荐执行顺序：
+### Claude Code
 
-1. 将用户自然语言需求转成 `CampaignRequest`。
-2. 用 `incentive-strategy-planner` 生成 `StrategyBrief`。
-3. 用 `vibe-activity-page` 选择页面框架并生成 `PageBuildSpec`。
-4. 根据 `PageBuildSpec.component_map` 读取组件库。
-5. 在外部 case 目录生成 H5 页面。
-6. 按 QA checklist 校验。
-
-## 核心原则
-
-- **组件优先**：开发任何页面模块前，先查 `component-library/components/`。
-- **配置驱动**：文案、奖励、阈值、任务、图片、按钮、计时器和主题值必须放在页面 config 中。
-- **框架先行**：先选页面框架，再设计首屏和交互细节。
-- **主链路完整**：页面必须实现进入、点击、反馈、状态变化和最终转化。
-- **H5 默认**：默认使用原生 HTML/CSS/JavaScript。
-- **案例外置**：新活动案例创建在 `/Users/bytedance/Documents/Incentive Page Cases/{case-name}/`，不要放进 Skill 仓库。
-- **PNG 优先**：背景、主视觉、玩法对象、贴纸、装饰图默认 PNG；SVG 只用于图标。
-- **Figma 尺寸尊重**：Figma 严格组件必须保持尺寸、行高、按钮尺寸和内容槽位。
-
-## 目录结构
+Claude Code should read:
 
 ```txt
-.
-├── AGENTS.md
-├── README.md
-├── component-library/
-│   ├── README.md
-│   ├── _component-template.md
-│   └── components/
-├── contracts/
-│   ├── campaign-request.schema.json
-│   ├── strategy-brief.schema.json
-│   └── page-build-spec.schema.json
-├── docs/
-│   └── campaign-skill-suite-protocol.md
-├── examples/
-│   └── h5/
-├── fixtures/
-└── skills/
-    ├── campaign-build-orchestrator/
-    ├── incentive-strategy-planner/
-    ├── vibe-activity-page/
-    └── figma-main-flow-annotator/
+CLAUDE.md
+SKILL.md
+AGENTS.md
 ```
 
-## 默认工作流
-
-当用户只给一句业务需求时，推荐使用完整链路：
+Recommended prompt:
 
 ```txt
-User Request
+Use this repository as an Incentive Design Agent Skill.
+Before building or reviewing a campaign page, read CLAUDE.md, SKILL.md, AGENTS.md, and the relevant files under skills/vibe-activity-page/.
+Keep business data in config, reuse component-library/components/, and output mobile H5 unless I explicitly request another stack.
+```
+
+### Cursor Agent
+
+Cursor can use the repository-level rules:
+
+```txt
+.cursorrules
+README.md
+SKILL.md
+```
+
+Recommended prompt:
+
+```txt
+Use the rules in .cursorrules and this README.
+Build the campaign page outside this skill package.
+Before creating UI, check component-library/components/ and reuse existing component contracts.
+```
+
+### Windsurf
+
+Windsurf should read:
+
+```txt
+.windsurfrules
+README.md
+SKILL.md
+```
+
+### Cline
+
+Cline should read:
+
+```txt
+.clinerules
+README.md
+SKILL.md
+```
+
+### Continue Or Other Agents
+
+For agents without a dedicated rule file, paste this into the agent's project instructions:
+
+```txt
+You are using the Incentive Design Agent Skill.
+For mobile incentive campaign pages, read SKILL.md, AGENTS.md, skills/vibe-activity-page/SKILL.md, and skills/vibe-activity-page/references/components.md.
+If the user provides only a short business request, also read docs/campaign-skill-suite-protocol.md, skills/campaign-build-orchestrator/SKILL.md, and skills/incentive-strategy-planner/SKILL.md.
+Default to mobile H5. Keep campaign copy, thresholds, rewards, images, tasks, timers, and theme values in page config.
+Before building a module, check component-library/components/ and reuse matching components.
+Do not create runnable campaign cases inside this skill package unless explicitly asked.
+```
+
+### Custom Agent Integration
+
+Custom agents should first index:
+
+```txt
+agent-skill.json
+```
+
+Then use the `entrypoints` field to choose files for each task type:
+
+- `general`: package overview and default behavior
+- `one_line_campaign_request`: full strategy-to-page workflow
+- `page_build`: page framework, visual style, component mapping, and H5 build rules
+- `component_lookup`: reusable component contracts
+- `contracts`: schema definitions for cross-skill artifacts
+
+Recommended execution model:
+
+```txt
+User request
 ↓
 CampaignRequest
 ↓
@@ -156,245 +175,227 @@ StrategyBrief
 ↓
 PageBuildSpec
 ↓
-H5 Page
+H5 implementation
 ↓
-QA
+QA checklist
 ```
 
-### CampaignRequest
+## Package Structure
 
-结构化用户原始需求，典型字段包括：
+```txt
+incentive-design-agent-skill/
+├── SKILL.md
+├── AGENTS.md
+├── CLAUDE.md
+├── README.md
+├── agent-skill.json
+├── .cursorrules
+├── .windsurfrules
+├── .clinerules
+├── component-library/
+├── contracts/
+├── docs/
+├── examples/
+├── fixtures/
+└── skills/
+```
 
-- 地区
-- 目标用户
-- 业务目标
-- 活动类型
-- 限制条件
+## Core Workflow
 
-Schema：
+### 1. CampaignRequest
+
+`campaign-build-orchestrator` converts natural language into a structured campaign request.
+
+Typical fields:
+
+- Region
+- Target users
+- Business goal
+- Campaign type
+- Constraints
+
+Schema:
 
 ```txt
 contracts/campaign-request.schema.json
 ```
 
-### StrategyBrief
+### 2. StrategyBrief
 
-定义玩法策略，典型内容包括：
+`incentive-strategy-planner` creates the campaign strategy.
 
-- 活动目标
-- 用户心理抓手
-- 核心玩法
-- 奖励结构
-- 周期建议
-- 页面结构建议
+Typical contents:
 
-Schema：
+- Goal breakdown
+- User motivation
+- Core gameplay
+- Reward structure
+- Campaign duration
+- Suggested page structure
+
+Schema:
 
 ```txt
 contracts/strategy-brief.schema.json
 ```
 
-### PageBuildSpec
+### 3. PageBuildSpec
 
-定义页面实现规格，典型内容包括：
+`vibe-activity-page` turns the strategy into a build plan.
 
-- 页面框架
-- 组件映射
-- 主链路状态
-- 资源生成计划
-- QA 要求
-- 实现文件清单
+Typical contents:
 
-Schema：
+- Page framework
+- Component mapping
+- Interaction states
+- Asset plan
+- QA requirements
+- Implementation files
+
+Schema:
 
 ```txt
 contracts/page-build-spec.schema.json
 ```
 
-## 主要 Skill
+## Main Skills
 
-### campaign-build-orchestrator
+| Skill | Purpose |
+| --- | --- |
+| `campaign-build-orchestrator` | Turns a one-line business request into `CampaignRequest` and coordinates downstream steps |
+| `incentive-strategy-planner` | Creates `StrategyBrief`, including gameplay, motivation, rewards, and cycle |
+| `vibe-activity-page` | Selects page framework, visual style, components, and builds the final H5 page |
+| `figma-main-flow-annotator` | Optional helper for documenting the main interaction flow in Figma |
 
-负责把一句自然语言需求转成 `CampaignRequest`，并协调后续 skill。
+## Page Frameworks
 
-路径：
-
-```txt
-skills/campaign-build-orchestrator/SKILL.md
-```
-
-### incentive-strategy-planner
-
-负责活动策略设计，输出 `StrategyBrief`。
-
-路径：
-
-```txt
-skills/incentive-strategy-planner/SKILL.md
-```
-
-### vibe-activity-page
-
-负责页面框架选择、组件映射、H5 实现和 QA。
-
-路径：
-
-```txt
-skills/vibe-activity-page/SKILL.md
-```
-
-### figma-main-flow-annotator
-
-负责将页面主链路转成 Figma 中可读的流程标注。
-
-路径：
-
-```txt
-skills/figma-main-flow-annotator/SKILL.md
-```
-
-## 页面框架
-
-页面框架在：
+Page frameworks live in:
 
 ```txt
 skills/vibe-activity-page/references/page-structures/
 ```
 
-当前重点框架：
+Current frameworks:
 
-| Framework | 用途 |
+| Framework | Use Case |
 | --- | --- |
-| `single-gameplay-conversion-page` | 单玩法转化页，适合转盘、盲盒、开盒、刮卡、抽奖机 |
-| `progress-accumulation-conversion-page` | 进度积累页，适合提现、积分、进度容器 |
-| `nurture-progress-conversion-page` | 陪伴养成页，适合召回、长周期回访、角色成长 |
+| `single-gameplay-conversion-page` | Spin wheel, lucky box, scratch card, draw machine, one-main-action pages |
+| `progress-accumulation-conversion-page` | Cash-out, points, progress container, staged accumulation pages |
+| `nurture-progress-conversion-page` | Companion nurturing, recall, long-cycle daily care, role growth pages |
 
-## 组件库概览
+## Component Library
 
-组件库在：
+Components live in:
 
 ```txt
 component-library/components/
 ```
 
-组件库不是 UI 框架，而是一组活动页常用模块的契约和轻量 H5 runtime。Agent 使用时应先读取组件自己的 `component.md`，再决定如何复用。
+The component library is a set of reusable campaign-page contracts and lightweight H5 runtimes. It is not a full UI framework.
 
-| Component | 说明 | 实现原理 |
+Before building any module, an agent should check whether a matching component already exists.
+
+| Component | What It Does | Implementation Principle |
 | --- | --- | --- |
-| `top-navigation` | 活动页顶部导航栏 | Web Component：`<incentive-top-navigation>` 生成状态栏、返回按钮、右侧动作 |
-| `task-list` | 每日任务列表 | Web Component：`<incentive-task-list>` 接收 config，按 Figma 锁定结构渲染 simple/progress/invite 任务 |
-| `share-panel` | 分享面板 | H5 组件，承载分享渠道、复制链接、分享图预览 |
-| `dialog` | 强反馈弹窗 | 奖励、领取、抽奖结果等使用的结果反馈容器 |
-| `toast` | 轻反馈提示 | 操作成功、失败、轻量状态提示 |
-| `asset-card` | 资产 / 奖励 / 进度卡 | 展示余额、阈值、奖励状态或进度状态 |
-| `primary-title` | 活动主标题 | 承载标题图或强视觉标题区域 |
-| `bottom-action-triple` | 底部行动区 | 一到三个 CTA 的底部行动组合 |
-| `contribution-module` | 好友助力 / 贡献模块 | 展示好友贡献、助力进度或协作行为 |
+| `top-navigation` | Campaign top navigation | Web Component: `<incentive-top-navigation>` renders status area, back button, and right-side actions |
+| `task-list` | Daily task list | Web Component: `<incentive-task-list>` receives config and renders simple, progress, and invite task types |
+| `share-panel` | Share channels and share result panel | H5 CSS/JS module for channel actions, copy link, and share preview |
+| `dialog` | Strong feedback layer | Reward, claim, draw result, or upgrade result feedback |
+| `toast` | Lightweight feedback | Success, blocked, or reminder messages |
+| `asset-card` | Asset, reward, or progress card | Shows balances, thresholds, reward states, or progress values |
+| `primary-title` | Campaign title visual | Title image or strong campaign title block |
+| `bottom-action-triple` | Bottom action area | One to three CTA actions in a fixed bottom region |
+| `contribution-module` | Friend help / contribution | Shows friend contribution, invite progress, or collaborative reward states |
 
-### 组件实现原则
+Component rules:
 
-- 组件的尺寸、状态、Figma 来源写在 `component.md`。
-- H5 runtime 使用原生 Web Component 或普通 CSS/JS，不依赖 React。
-- 页面只传 config 和监听事件，不直接改组件内部 DOM。
-- 组件允许换肤，但不允许破坏 Figma 锁定尺寸。
-- 如果组件来自 Figma frame，按 frame 结构还原，不强行转为别的抽象。
+- The source of truth for each component is `component-library/components/{component}/component.md`.
+- Page code should pass config into components and listen to component events.
+- Page code should not directly mutate a component's internal DOM.
+- If a Figma source is a `FRAME`, preserve the frame structure instead of converting it into another abstraction.
+- Component colors and images may be themed, but locked dimensions and state structure should remain intact.
 
-### TaskList 简要说明
+## Output Rules For New Campaign Cases
 
-`task-list` 是当前重点沉淀组件。
+Do not create new runnable campaign cases inside this skill package by default.
 
-路径：
-
-```txt
-component-library/components/task-list/
-```
-
-使用方式：
-
-```html
-<link rel="stylesheet" href="../../component-library/components/task-list/task-list.css" />
-<script src="../../component-library/components/task-list/task-list.js"></script>
-<incentive-task-list></incentive-task-list>
-```
-
-配置方式：
-
-```js
-const taskList = document.querySelector("incentive-task-list");
-
-taskList.config = {
-  title: "Daily Task",
-  subtitle: "Updated everyday 24:00",
-  mediumIconImage: "./assets/reward-icon.png",
-  tasks: [
-    {
-      id: "bonus",
-      type: "simple",
-      title: "Get Bonus every 20 mins",
-      rewardAmount: 3,
-      description: "Up to 10 times a day.",
-      status: "available",
-      actionLabel: "Claim"
-    }
-  ]
-};
-
-taskList.addEventListener("task-list-action", (event) => {
-  const taskId = event.detail.taskId;
-});
-```
-
-详细尺寸和 Figma 锁定规则见：
+Create new pages outside the package, for example:
 
 ```txt
-component-library/components/task-list/component.md
+/Users/bytedance/Documents/Incentive Page Cases/{case-name}/
 ```
 
-## 示例模块：巴西开 5 个盒子
-
-这个示例用于说明 Agent 如何把一句需求转成页面结构。图片可以后续补齐，当前只定义框架、配置和交互。
-
-### 用户需求
+Recommended H5 structure:
 
 ```txt
-帮我做一个巴西活动页，用户每天可以开 5 个盒子，完成任务获得开盒机会，每个盒子可能开出积分或优惠券。
+case-name/
+├── index.html
+├── styles.css
+├── script.js
+└── assets/
 ```
 
-### 推荐页面框架
+Implementation rules:
 
-使用：
+- Use H5 by default.
+- Put campaign copy, rewards, thresholds, tasks, images, channels, timers, and theme values in page config.
+- Use render functions or component modules for sections.
+- Reuse component-library components first.
+- Use Dialog for important reward results.
+- Use Toast for lightweight feedback.
+- Ensure visible state changes for every main CTA.
+- Support 320px and 390px mobile widths without horizontal scrolling.
+
+## Visual Asset Rules
+
+- Backgrounds, title art, gameplay objects, stickers, decorative assets, generated visuals, and Figma restoration image fills should be PNG.
+- SVG is allowed for icons, compact UI glyphs, and share-channel icons.
+- Object states should share the same canvas and display size to avoid layout jumps.
+- Images referenced by a page must be copied into the target project or component directory.
+
+## Example Module: Brazil Open 5 Boxes
+
+This example shows how an agent should translate a short business request into a reusable activity module. Images can be filled in later.
+
+### User Request
+
+```txt
+Create a Brazil campaign page where users can open 5 boxes per day. Users can complete tasks to earn more box-opening chances. Each box may reveal coins or a coupon.
+```
+
+### Recommended Framework
 
 ```txt
 single-gameplay-conversion-page
 ```
 
-原因：
+Why:
 
-- 主玩法是“开盒子”，属于单核心玩法。
-- 页面目标是让用户消耗机会并获得奖励结果。
-- 任务只是补充机会，不是主页面主体。
+- The main action is opening boxes.
+- The page conversion goal is to consume chances and reveal rewards.
+- Tasks are secondary mechanics used to earn more chances.
 
-### 主链路
+### Main Flow
 
 ```txt
-用户进入页面
+User enters page
 ↓
-看到今日剩余开盒次数 5
+Sees today's remaining chances
 ↓
-点击一个未开启盒子
+Taps a closed box
 ↓
-盒子播放打开反馈
+Box plays opening feedback
 ↓
-弹出奖励 Dialog
+Reward Dialog appears
 ↓
-剩余次数 -1
+Remaining chances -1
 ↓
-用户继续打开下一个盒子
+User opens another box
 ↓
-次数耗尽后引导完成任务获得更多机会
+When chances reach 0, guide user to complete tasks
 ```
 
-### 页面模块
+### Page Modules
 
 ```txt
 TopNavigation
@@ -406,7 +407,7 @@ TaskList
 Toast
 ```
 
-### 配置示例
+### Config Example
 
 ```js
 const campaignConfig = {
@@ -446,11 +447,10 @@ const campaignConfig = {
       steps: [
         { label: "5min", reward: "1", reached: false },
         { label: "10min", reward: "1", reached: false },
-        { label: "30min", reward: "1", reached: false },
-        { label: "60min", reward: "1", reached: false }
+        { label: "20min", reward: "2", reached: false }
       ],
       status: "available",
-      actionLabel: "Watch"
+      actionLabel: "Go"
     },
     {
       id: "invite",
@@ -467,7 +467,7 @@ const campaignConfig = {
 };
 ```
 
-### 状态模型示例
+### State Model Example
 
 ```js
 const state = {
@@ -480,19 +480,19 @@ const state = {
 };
 ```
 
-### 交互规则
+### Interaction Rules
 
-- `chances > 0` 时，未开启盒子可点击。
-- 点击盒子后，该盒子状态从 `closed` 变为 `opened`。
-- 每次开盒消耗 1 次机会。
-- 开盒结果使用 `Dialog`，不能只用 Toast。
-- `chances === 0` 时，盒子点击展示 Toast，引导完成任务。
-- 完成任务后增加开盒机会。
-- 5 个盒子必须保持固定布局，不因奖励结果或文案变化跳动。
+- If `chances > 0`, closed boxes are tappable.
+- Tapping a box changes its state from `closed` to `opened`.
+- Each box opening consumes 1 chance.
+- Reward results use `Dialog`, not only Toast.
+- If `chances === 0`, box taps show Toast and guide users to tasks.
+- Completing a task increases chances.
+- The 5-box layout must stay stable after state changes.
 
-### 图片占位
+### Image Placeholders
 
-后续补图时建议准备：
+Prepare these images later:
 
 ```txt
 assets/bg-brazil-boxes.png
@@ -502,96 +502,45 @@ assets/box-opened.png
 assets/reward-icon.png
 ```
 
-要求：
+Image requirements:
 
-- 背景、标题、盒子图使用 PNG。
-- 盒子关闭和打开状态应同画布、同展示尺寸。
-- 盒子图不要带文字，奖励文案由 HTML 渲染。
-- 巴西视觉可以使用热带、节庆、足球、桑巴等元素，但不要让背景干扰盒子点击区域。
+- Use PNG for the background, title, boxes, and reward object.
+- Closed and opened boxes should share the same canvas size and display size.
+- Box images should not contain reward text. Render reward copy in HTML.
+- Brazil styling can use tropical, festive, football, carnival, or high-energy color cues, but the background should not interfere with box tap areas.
 
-### QA 要点
+### QA Points
 
-- 首屏能看到剩余开盒次数和至少 3 个盒子。
-- 5 个盒子点击热区清晰。
-- 开盒后对应盒子状态真实变化。
-- 奖励 Dialog 明确展示奖励。
-- 次数用尽后有明确任务引导。
-- TaskList 使用组件库，不手写任务列表。
-- 320px 和 390px 下无横向滚动。
-
-## 活动页代码放置规则
-
-不要把新的可运行活动案例放进 Skill 仓库。
-
-新活动页应创建在：
-
-```txt
-/Users/bytedance/Documents/Incentive Page Cases/{case-name}/
-```
-
-推荐结构：
-
-```txt
-case-name/
-├── index.html
-├── styles.css
-├── script.js
-└── assets/
-```
-
-Skill 仓库只保留：
-
-- 组件库
-- 框架规则
-- 视觉规范
-- contracts
-- fixtures
-- curated examples
-
-## Figma 使用规则
-
-当用户提供 Figma 链接时：
-
-1. 先读取 Figma 节点上下文。
-2. 如果用户要求严格参考组件，继续读取具体子层节点。
-3. Figma 组件若来源是 `FRAME`，按 frame 结构和尺寸实现。
-4. 颜色、图片可以按页面视觉风格换肤，但布局尺寸必须遵守组件契约。
-5. 组件沉淀后更新 `component-library/components/{component}/component.md`。
-
-## 视觉资产规则
-
-- 背景、主视觉、玩法对象、贴纸、装饰图默认 PNG。
-- SVG 只用于图标。
-- 透明角色图可以通过 chroma-key 背景生成后本地扣图。
-- 项目引用的图片必须复制到目标项目或组件目录。
-- 同一对象的多状态图片必须同画布、同展示尺寸，避免状态变化时页面跳动。
+- The first screen shows remaining chances and at least 3 boxes.
+- All 5 boxes have clear tap targets.
+- Opened boxes visibly change state.
+- Reward Dialog clearly shows the result.
+- When chances run out, the page clearly guides users to earn more chances.
+- TaskList uses the component library or follows its contract.
+- No horizontal scrolling at 320px or 390px widths.
 
 ## QA Checklist
 
-交付前至少检查：
+Before delivery, verify:
 
-- 页面主链路是否完整。
-- 首屏是否说明用户是谁、进度在哪、今天做什么、做完得到什么。
-- 组件是否来自组件库或已记录 gap。
-- 导航栏是否使用 `<incentive-top-navigation>`。
-- 任务列表是否使用 `<incentive-task-list>` 或遵循其组件契约。
-- Navigation icons 是否在 `32 x 32` 按钮中视觉居中。
-- 玩法状态变化是否真实可见。
-- 奖励结果是否使用 Dialog。
-- 轻反馈是否使用 Toast。
-- 320px / 390px 下是否无横向滚动。
-- 文案是否没有溢出或遮挡。
+- The selected page framework matches the campaign mechanic.
+- The main interaction flow is complete.
+- Business data is in config, not hardcoded inside presentational components.
+- Reusable components are used when available.
+- Navigation uses `top-navigation` when a campaign header is needed.
+- Task pages use `task-list` or follow its contract.
+- Reward results use Dialog.
+- Lightweight feedback uses Toast.
+- Primary state changes are visible.
+- 320px and 390px mobile layouts do not overflow.
+- Text does not overlap, clip, or exceed button/card boundaries.
 
-## 当前已发布仓库
+## Publishing And Sharing
 
-```txt
-https://github.com/willemhwl94-del/Incentive-Design-Skill
+This folder can be shared directly or zipped:
+
+```bash
+zip -r incentive-design-agent-skill.zip incentive-design-agent-skill
 ```
 
-## 维护建议
-
-- 新增可复用组件时，创建 `component.md`。
-- 从页面中沉淀组件后，移除页面私有重复实现。
-- 页面框架只描述结构和链路，不复制组件内部尺寸。
-- 组件内部尺寸归组件库维护。
-- 每次发现 Figma 还原偏差，都要回写到组件规范或 QA checklist。
+When publishing to GitHub, the contents of `incentive-design-agent-skill/` can be used as the repository root so users immediately see `README.md`, `SKILL.md`, `AGENTS.md`, and agent rule files.
