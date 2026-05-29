@@ -404,81 +404,8 @@ Box Gameplay Area
 Reward Dialog
 TaskList
 Toast
-```
+`````
 
-### 配置示例
-
-```js
-const campaignConfig = {
-  campaignId: "br-open-five-boxes-v1",
-  region: "BR",
-  title: "Open Your Lucky Boxes",
-  subtitle: "Open up to 5 boxes today.",
-  maxDailyOpens: 5,
-  initialChances: 5,
-  rewardUnit: "Coins",
-  assets: {
-    backgroundImage: "./assets/bg-brazil-boxes.png",
-    titleImage: "./assets/title-open-boxes.png",
-    boxClosedImage: "./assets/box-closed.png",
-    boxOpenedImage: "./assets/box-opened.png",
-    rewardIconImage: "./assets/reward-icon.png"
-  },
-  boxes: [
-    { id: "box-1", state: "closed" },
-    { id: "box-2", state: "closed" },
-    { id: "box-3", state: "closed" },
-    { id: "box-4", state: "closed" },
-    { id: "box-5", state: "closed" }
-  ],
-  rewards: [
-    { id: "coins-small", label: "100 Coins", amount: 100, type: "coins" },
-    { id: "coins-mid", label: "300 Coins", amount: 300, type: "coins" },
-    { id: "coupon", label: "Special Coupon", amount: 1, type: "coupon" }
-  ],
-  tasks: [
-    {
-      id: "watch",
-      type: "progress",
-      title: "Watch videos to get",
-      rewardAmount: 1,
-      progress: 0.2,
-      steps: [
-        { label: "5min", reward: "1", reached: false },
-        { label: "10min", reward: "1", reached: false },
-        { label: "30min", reward: "1", reached: false },
-        { label: "60min", reward: "1", reached: false }
-      ],
-      status: "available",
-      actionLabel: "Watch"
-    },
-    {
-      id: "invite",
-      type: "invite",
-      title: "Invite friends to earn boxes",
-      inviteRewards: [
-        { label: "Yourself", value: "+1", avatar: "self" },
-        { label: "Your friend", value: "+1", avatar: "friend" }
-      ],
-      status: "available",
-      actionLabel: "Invite"
-    }
-  ]
-};
-```
-
-### 状态模型示例
-
-```js
-const state = {
-  chances: campaignConfig.initialChances,
-  openedBoxIds: new Set(),
-  lastReward: null,
-  taskStatuses: Object.fromEntries(
-    campaignConfig.tasks.map((task) => [task.id, task.status])
-  )
-};
-```
 
 ### 交互规则
 
@@ -490,24 +417,9 @@ const state = {
 - 完成任务后增加开盒机会。
 - 5 个盒子必须保持固定布局，不因奖励结果或文案变化跳动。
 
-### 图片占位
+### 图片
+<img width="2831" height="1230" alt="Slice 1" src="https://github.com/user-attachments/assets/dcdbcb94-23f7-48ac-a6b3-1ae0b5db8e8e" />
 
-后续补图时建议准备：
-
-```txt
-assets/bg-brazil-boxes.png
-assets/title-open-boxes.png
-assets/box-closed.png
-assets/box-opened.png
-assets/reward-icon.png
-```
-
-要求：
-
-- 背景、标题、盒子图使用 PNG。
-- 盒子关闭和打开状态应同画布、同展示尺寸。
-- 盒子图不要带文字，奖励文案由 HTML 渲染。
-- 巴西视觉可以使用热带、节庆、足球、桑巴等元素，但不要让背景干扰盒子点击区域。
 
 ### QA 要点
 
