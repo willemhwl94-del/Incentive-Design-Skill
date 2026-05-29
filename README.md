@@ -1,8 +1,10 @@
 # Incentive Design Skill
 
-面向移动端激励活动页的 Codex Skill 仓库，用来沉淀活动策略、页面框架、组件规范、视觉规则和 H5 代码实现经验。
+面向移动端激励活动页的可复用设计与构建 Skill。它不是某一个活动页面项目，而是一套给 AI Agent 使用的活动页生产知识库：包含活动策略拆解、页面框架、组件契约、Figma 还原规则、视觉资产规则、H5 实现规范和 QA 清单。
 
-这个仓库不是单个活动项目，而是一套可复用的“活动页生产能力”。当用户提出一个召回、任务、抽奖、邀请、养成、进度积累等活动需求时，Codex 可以基于这里的规则完成从策略拆解到 H5 页面实现的完整流程。
+这个仓库可以被 Codex 使用，也可以被 Claude Code、Cursor Agent、Cline、Continue、自研 Agent、脚本化构建器或任何能读取本地文件的 AI 编码 Agent 使用。
+
+默认产物是移动端 H5 活动页。除非用户明确要求 React、Vue、Tailwind 或其他技术栈，否则优先使用原生 HTML/CSS/JavaScript。
 
 ## 适用场景
 
@@ -16,17 +18,104 @@
 - 进度积累、提现、积分兑换活动
 - 陪伴养成、储蓄罐、成长路径类长周期活动
 
-默认产物是移动端 H5 活动页。除非用户明确要求 React、Vue、Tailwind 或其他技术栈，否则优先使用原生 HTML/CSS/JavaScript。
+不适合用于：
+
+- 纯品牌长文页
+- 无激励机制的普通营销落地页
+- 完全依赖后端复杂状态机的生产系统
+- 已经有完整产品设计系统且不能使用本仓库组件规范的项目
+
+## 给 Agent 的使用方式
+
+不同 Agent 不需要“安装”这个仓库才能使用它。只要能读取文件，就可以把它当作活动页设计与代码生成规范。
+
+### Codex 使用方式
+
+Codex 会自动读取 `AGENTS.md`。在开始创建、重构或评审活动页前，应优先阅读：
+
+```txt
+AGENTS.md
+skills/vibe-activity-page/SKILL.md
+```
+
+如果用户只给一句业务需求，按完整链路执行：
+
+```txt
+docs/campaign-skill-suite-protocol.md
+skills/campaign-build-orchestrator/SKILL.md
+skills/incentive-strategy-planner/SKILL.md
+skills/vibe-activity-page/SKILL.md
+```
+
+### 其他 Agent 使用方式
+
+对 Claude Code、Cursor Agent、Cline、Continue 或自研 Agent，可以在系统提示词或项目规则里加入：
+
+```txt
+你正在使用 Incentive Design Skill 仓库。
+在创建、修改或评审移动端激励活动页前，先读取：
+1. AGENTS.md
+2. skills/vibe-activity-page/SKILL.md
+3. skills/vibe-activity-page/references/components.md
+4. 对应页面框架文件，例如：
+   skills/vibe-activity-page/references/page-structures/nurture-progress-conversion-page.md
+
+默认输出 H5 页面。
+新活动案例不要写入 Skill 仓库，必须创建在：
+/Users/bytedance/Documents/Incentive Page Cases/{case-name}/
+
+开发任何模块前，先检查 component-library/components/。
+业务数据必须放在页面 config 中。
+组件尺寸和 Figma 约束以 component-library/components/{component}/component.md 为准。
+```
+
+如果 Agent 不支持多文件自动检索，可以把以下最小上下文喂给它：
+
+```txt
+AGENTS.md
+skills/vibe-activity-page/SKILL.md
+skills/vibe-activity-page/references/components.md
+目标页面框架 markdown
+需要使用的组件 component.md
+```
+
+### 自研 Agent 集成方式
+
+自研 Agent 可以把本仓库当作三层知识库：
+
+```txt
+Request Layer
+  contracts/
+  docs/campaign-skill-suite-protocol.md
+
+Planning Layer
+  skills/campaign-build-orchestrator/
+  skills/incentive-strategy-planner/
+
+Page Build Layer
+  skills/vibe-activity-page/
+  component-library/components/
+```
+
+推荐执行顺序：
+
+1. 将用户自然语言需求转成 `CampaignRequest`。
+2. 用 `incentive-strategy-planner` 生成 `StrategyBrief`。
+3. 用 `vibe-activity-page` 选择页面框架并生成 `PageBuildSpec`。
+4. 根据 `PageBuildSpec.component_map` 读取组件库。
+5. 在外部 case 目录生成 H5 页面。
+6. 按 QA checklist 校验。
 
 ## 核心原则
 
-- **组件优先**：开发任何页面模块前，先查 `component-library/components/`，能复用组件就不新写。
-- **配置驱动**：业务文案、奖励、阈值、任务、图片、按钮文案、计时器和主题值必须放在页面 config 中。
+- **组件优先**：开发任何页面模块前，先查 `component-library/components/`。
+- **配置驱动**：文案、奖励、阈值、任务、图片、按钮、计时器和主题值必须放在页面 config 中。
 - **框架先行**：先选页面框架，再设计首屏和交互细节。
-- **主链路完整**：页面不是静态 mock，必须实现从进入、点击、反馈、状态变化到最终转化的链路。
-- **H5 默认**：活动页默认使用 H5，案例代码放到独立 case 目录，不放进 Skill 仓库。
-- **视觉资产 PNG 优先**：背景、主视觉、玩法对象、贴纸、装饰图默认使用 PNG；SVG 只用于图标。
-- **Figma 尺寸尊重**：来自 Figma 的严格组件必须保持原尺寸、行高、按钮尺寸和内容槽位。
+- **主链路完整**：页面必须实现进入、点击、反馈、状态变化和最终转化。
+- **H5 默认**：默认使用原生 HTML/CSS/JavaScript。
+- **案例外置**：新活动案例创建在 `/Users/bytedance/Documents/Incentive Page Cases/{case-name}/`，不要放进 Skill 仓库。
+- **PNG 优先**：背景、主视觉、玩法对象、贴纸、装饰图默认 PNG；SVG 只用于图标。
+- **Figma 尺寸尊重**：Figma 严格组件必须保持尺寸、行高、按钮尺寸和内容槽位。
 
 ## 目录结构
 
@@ -38,15 +127,6 @@
 │   ├── README.md
 │   ├── _component-template.md
 │   └── components/
-│       ├── top-navigation/
-│       ├── task-list/
-│       ├── share-panel/
-│       ├── dialog/
-│       ├── toast/
-│       ├── asset-card/
-│       ├── primary-title/
-│       ├── bottom-action-triple/
-│       └── contribution-module/
 ├── contracts/
 │   ├── campaign-request.schema.json
 │   ├── strategy-brief.schema.json
@@ -65,264 +145,179 @@
 
 ## 默认工作流
 
-当用户只给一句业务需求时，推荐走完整 campaign skill suite：
+当用户只给一句业务需求时，推荐使用完整链路：
 
 ```txt
-用户一句话需求
-↓
-campaign-build-orchestrator
+User Request
 ↓
 CampaignRequest
 ↓
-incentive-strategy-planner
-↓
 StrategyBrief
 ↓
-vibe-activity-page
+PageBuildSpec
 ↓
-PageBuildSpec + H5 页面代码
+H5 Page
+↓
+QA
 ```
 
-每个阶段都通过 `contracts/` 中的 schema 交换信息，避免下游 skill 读取上游内部实现。
+### CampaignRequest
 
-### 1. CampaignRequest
+结构化用户原始需求，典型字段包括：
 
-由 `campaign-build-orchestrator` 生成，负责把用户的自然语言需求转为结构化活动请求。
-
-典型字段包括：
-
-- 国家 / 地区
-- 用户群体
+- 地区
+- 目标用户
 - 业务目标
 - 活动类型
-- 约束条件
+- 限制条件
 
-### 2. StrategyBrief
+Schema：
 
-由 `incentive-strategy-planner` 生成，负责定义活动策略。
+```txt
+contracts/campaign-request.schema.json
+```
 
-典型内容包括：
+### StrategyBrief
 
-- 核心目标
+定义玩法策略，典型内容包括：
+
+- 活动目标
 - 用户心理抓手
-- 玩法主链路
+- 核心玩法
 - 奖励结构
 - 周期建议
 - 页面结构建议
 
-### 3. PageBuildSpec
+Schema：
 
-由 `vibe-activity-page` 生成，负责把策略变成页面构建规格。
+```txt
+contracts/strategy-brief.schema.json
+```
 
-典型内容包括：
+### PageBuildSpec
+
+定义页面实现规格，典型内容包括：
 
 - 页面框架
 - 组件映射
-- 交互状态
+- 主链路状态
 - 资源生成计划
 - QA 要求
-- 最终实现文件
+- 实现文件清单
+
+Schema：
+
+```txt
+contracts/page-build-spec.schema.json
+```
 
 ## 主要 Skill
 
-### `campaign-build-orchestrator`
+### campaign-build-orchestrator
 
-负责将用户的一句话需求转成 `CampaignRequest`，并协调后续 skill。
+负责把一句自然语言需求转成 `CampaignRequest`，并协调后续 skill。
 
-使用时机：
+路径：
 
-- 用户只说“帮我做一个 XX 活动”
-- 需求还没有结构化
-- 需要自动进入策略规划和页面实现链路
+```txt
+skills/campaign-build-orchestrator/SKILL.md
+```
 
-### `incentive-strategy-planner`
+### incentive-strategy-planner
 
-负责产出活动策略。
+负责活动策略设计，输出 `StrategyBrief`。
 
-使用时机：
+路径：
 
-- 需要拆解玩法机制
-- 需要设计奖励节奏
-- 需要判断活动周期
-- 需要生成 `StrategyBrief`
+```txt
+skills/incentive-strategy-planner/SKILL.md
+```
 
-### `vibe-activity-page`
+### vibe-activity-page
 
-负责页面框架选择、组件映射、H5 代码实现和 QA。
+负责页面框架选择、组件映射、H5 实现和 QA。
 
-使用时机：
-
-- 创建、重构或评审活动页
-- 将策略落成 H5 页面
-- 从 Figma 组件恢复页面
-- 沉淀新的页面框架或组件规范
-
-关键入口：
+路径：
 
 ```txt
 skills/vibe-activity-page/SKILL.md
 ```
 
-### `figma-main-flow-annotator`
+### figma-main-flow-annotator
 
-负责将页面主链路整理成 Figma 中可读的流程标注。
+负责将页面主链路转成 Figma 中可读的流程标注。
 
-使用时机：
+路径：
 
-- 需要在 Figma 中表达交互链路
-- 需要把页面状态、点击路径和反馈状态连接起来
+```txt
+skills/figma-main-flow-annotator/SKILL.md
+```
 
 ## 页面框架
 
-页面框架存放在：
+页面框架在：
 
 ```txt
 skills/vibe-activity-page/references/page-structures/
 ```
 
-当前重点框架包括：
+当前重点框架：
 
-| Framework | 说明 |
+| Framework | 用途 |
 | --- | --- |
-| `single-gameplay-conversion-page` | 单玩法转化页，适合转盘、盲盒、刮刮卡、抽奖机等 |
+| `single-gameplay-conversion-page` | 单玩法转化页，适合转盘、盲盒、开盒、刮卡、抽奖机 |
 | `progress-accumulation-conversion-page` | 进度积累页，适合提现、积分、进度容器 |
 | `nurture-progress-conversion-page` | 陪伴养成页，适合召回、长周期回访、角色成长 |
 
-### `nurture-progress-conversion-page`
+## 组件库概览
 
-这是陪伴养成型活动页框架，适合日本沉睡用户召回、低压力回访、每日轻任务、角色成长和阶段奖励。
-
-核心链路：
-
-```txt
-用户进入页面
-↓
-看到陪伴 IP 和当前成长阶段
-↓
-完成轻任务获得养成介质
-↓
-消耗介质进行养成
-↓
-成长进度增加
-↓
-进度满格后 IP 进化并弹出奖励
-↓
-进度归 0，进入下一阶段
-```
-
-关键规则：
-
-- IP 直接放在页面头部环境中，不放在卡片里。
-- 头部环境背景图从页面顶部开始，导航栏覆盖在背景上。
-- IP 建议有 3 个视觉等级：初始、成长、进化。
-- 3 个等级图片必须同画布、同展示尺寸，升级只改变 IP 样式，不改变页面框架。
-- IP 应使用轻量动态，如呼吸、漂浮、点击反馈、进化反馈。
-- 介质余额放在主行动点附近，不放在进度卡里。
-- 进度卡只记录 IP 成长阶段、下一次升级、剩余养成次数和奖励预览。
-- 默认不添加 milestones 区块。
-- 默认不添加 rules 区块。
-- 默认不添加底部吸底导航。
-
-## 组件库
-
-组件库位于：
+组件库在：
 
 ```txt
 component-library/components/
 ```
 
-使用规则：
+组件库不是 UI 框架，而是一组活动页常用模块的契约和轻量 H5 runtime。Agent 使用时应先读取组件自己的 `component.md`，再决定如何复用。
 
-1. 页面开发前必须先查组件库。
-2. 有匹配组件时，页面必须复用组件或遵循组件契约。
-3. 组件的详细尺寸、Figma 来源、视觉锁定和状态规则归组件自己的 `component.md` 管理。
-4. 页面框架只引用组件，不复制组件的完整尺寸规范。
-
-### TopNavigation
-
-目录：
-
-```txt
-component-library/components/top-navigation/
-```
-
-文件：
-
-- `component.md`
-- `top-navigation.css`
-- `top-navigation.js`
-- `assets/music-note-s-alt.svg`
-- `assets/music-note-s-alt-centered.svg`
-
-使用方式：
-
-```html
-<link rel="stylesheet" href="../../component-library/components/top-navigation/top-navigation.css" />
-<script src="../../component-library/components/top-navigation/top-navigation.js"></script>
-
-<incentive-top-navigation variant="two-dark" title=""></incentive-top-navigation>
-```
-
-已支持变体：
-
-| Variant | Figma node | 右侧动作 |
+| Component | 说明 | 实现原理 |
 | --- | --- | --- |
-| `two-dark` | `331:13611` | Music, Question |
-| `two-light` | `331:13637` | Music, Question |
-| `three-dark` | `331:13612` | Music, Share, More |
-| `one-dark` | `404:13177` | More |
+| `top-navigation` | 活动页顶部导航栏 | Web Component：`<incentive-top-navigation>` 生成状态栏、返回按钮、右侧动作 |
+| `task-list` | 每日任务列表 | Web Component：`<incentive-task-list>` 接收 config，按 Figma 锁定结构渲染 simple/progress/invite 任务 |
+| `share-panel` | 分享面板 | H5 组件，承载分享渠道、复制链接、分享图预览 |
+| `dialog` | 强反馈弹窗 | 奖励、领取、抽奖结果等使用的结果反馈容器 |
+| `toast` | 轻反馈提示 | 操作成功、失败、轻量状态提示 |
+| `asset-card` | 资产 / 奖励 / 进度卡 | 展示余额、阈值、奖励状态或进度状态 |
+| `primary-title` | 活动主标题 | 承载标题图或强视觉标题区域 |
+| `bottom-action-triple` | 底部行动区 | 一到三个 CTA 的底部行动组合 |
+| `contribution-module` | 好友助力 / 贡献模块 | 展示好友贡献、助力进度或协作行为 |
 
-关键规则：
+### 组件实现原则
 
-- 页面必须使用 `<incentive-top-navigation>`，不能手写导航 DOM。
-- 页面可以监听 `top-navigation-back` 和 `top-navigation-action`。
-- 页面不能查询或修改组件内部按钮。
-- Music 图标使用 Figma 导出的 `Icon/Music_Note_S_Alt` vector path。
-- Music 图标必须归一到居中的 `20 x 20` inline SVG canvas。
-- 导航 icon 必须在 `32 x 32` 圆形按钮里视觉居中。
-- 导航颜色来自 Figma 变体，不跟随活动主题重染。
+- 组件的尺寸、状态、Figma 来源写在 `component.md`。
+- H5 runtime 使用原生 Web Component 或普通 CSS/JS，不依赖 React。
+- 页面只传 config 和监听事件，不直接改组件内部 DOM。
+- 组件允许换肤，但不允许破坏 Figma 锁定尺寸。
+- 如果组件来自 Figma frame，按 frame 结构还原，不强行转为别的抽象。
 
-事件示例：
+### TaskList 简要说明
 
-```js
-document.querySelector("incentive-top-navigation").addEventListener("top-navigation-action", (event) => {
-  const action = event.detail.action;
-  console.log(action);
-});
-```
+`task-list` 是当前重点沉淀组件。
 
-### TaskList
-
-目录：
+路径：
 
 ```txt
 component-library/components/task-list/
 ```
-
-文件：
-
-- `component.md`
-- `task-list.css`
-- `task-list.js`
-
-Figma 来源：
-
-- Section: `680:787`
-- Main frame: `680:3521`
-- Simple task: `680:3970`
-- Progress task: `680:4006`
-- Invite task: `680:4156`
 
 使用方式：
 
 ```html
 <link rel="stylesheet" href="../../component-library/components/task-list/task-list.css" />
 <script src="../../component-library/components/task-list/task-list.js"></script>
-
 <incentive-task-list></incentive-task-list>
 ```
 
-配置示例：
+配置方式：
 
 ```js
 const taskList = document.querySelector("incentive-task-list");
@@ -330,7 +325,7 @@ const taskList = document.querySelector("incentive-task-list");
 taskList.config = {
   title: "Daily Task",
   subtitle: "Updated everyday 24:00",
-  mediumIconImage: "./assets/growth-dew-icon.png",
+  mediumIconImage: "./assets/reward-icon.png",
   tasks: [
     {
       id: "bonus",
@@ -340,13 +335,114 @@ taskList.config = {
       description: "Up to 10 times a day.",
       status: "available",
       actionLabel: "Claim"
-    },
+    }
+  ]
+};
+
+taskList.addEventListener("task-list-action", (event) => {
+  const taskId = event.detail.taskId;
+});
+```
+
+详细尺寸和 Figma 锁定规则见：
+
+```txt
+component-library/components/task-list/component.md
+```
+
+## 示例模块：巴西开 5 个盒子
+
+这个示例用于说明 Agent 如何把一句需求转成页面结构。图片可以后续补齐，当前只定义框架、配置和交互。
+
+### 用户需求
+
+```txt
+帮我做一个巴西活动页，用户每天可以开 5 个盒子，完成任务获得开盒机会，每个盒子可能开出积分或优惠券。
+```
+
+### 推荐页面框架
+
+使用：
+
+```txt
+single-gameplay-conversion-page
+```
+
+原因：
+
+- 主玩法是“开盒子”，属于单核心玩法。
+- 页面目标是让用户消耗机会并获得奖励结果。
+- 任务只是补充机会，不是主页面主体。
+
+### 主链路
+
+```txt
+用户进入页面
+↓
+看到今日剩余开盒次数 5
+↓
+点击一个未开启盒子
+↓
+盒子播放打开反馈
+↓
+弹出奖励 Dialog
+↓
+剩余次数 -1
+↓
+用户继续打开下一个盒子
+↓
+次数耗尽后引导完成任务获得更多机会
+```
+
+### 页面模块
+
+```txt
+TopNavigation
+Hero / Title Area
+Chance Status Card
+Box Gameplay Area
+Reward Dialog
+TaskList
+Toast
+```
+
+### 配置示例
+
+```js
+const campaignConfig = {
+  campaignId: "br-open-five-boxes-v1",
+  region: "BR",
+  title: "Open Your Lucky Boxes",
+  subtitle: "Open up to 5 boxes today.",
+  maxDailyOpens: 5,
+  initialChances: 5,
+  rewardUnit: "Coins",
+  assets: {
+    backgroundImage: "./assets/bg-brazil-boxes.png",
+    titleImage: "./assets/title-open-boxes.png",
+    boxClosedImage: "./assets/box-closed.png",
+    boxOpenedImage: "./assets/box-opened.png",
+    rewardIconImage: "./assets/reward-icon.png"
+  },
+  boxes: [
+    { id: "box-1", state: "closed" },
+    { id: "box-2", state: "closed" },
+    { id: "box-3", state: "closed" },
+    { id: "box-4", state: "closed" },
+    { id: "box-5", state: "closed" }
+  ],
+  rewards: [
+    { id: "coins-small", label: "100 Coins", amount: 100, type: "coins" },
+    { id: "coins-mid", label: "300 Coins", amount: 300, type: "coins" },
+    { id: "coupon", label: "Special Coupon", amount: 1, type: "coupon" }
+  ],
+  tasks: [
     {
       id: "watch",
       type: "progress",
       title: "Watch videos to get",
-      rewardAmount: 5,
-      progress: 0.22,
+      rewardAmount: 1,
+      progress: 0.2,
       steps: [
         { label: "5min", reward: "1", reached: false },
         { label: "10min", reward: "1", reached: false },
@@ -359,9 +455,9 @@ taskList.config = {
     {
       id: "invite",
       type: "invite",
-      title: "Invite new friends to join TikTok",
+      title: "Invite friends to earn boxes",
       inviteRewards: [
-        { label: "Yourself", value: "+4", avatar: "self" },
+        { label: "Yourself", value: "+1", avatar: "self" },
         { label: "Your friend", value: "+1", avatar: "friend" }
       ],
       status: "available",
@@ -369,104 +465,78 @@ taskList.config = {
     }
   ]
 };
-
-taskList.addEventListener("task-list-action", (event) => {
-  console.log(event.detail.taskId);
-});
 ```
 
-严格尺寸：
-
-| Element | Size / Position |
-| --- | --- |
-| 外层组件 | `358 x 495` |
-| 外层圆角 | `16 60 16 16` |
-| 标题区 | `358 x 72` |
-| 标题文案组 | `x 20, y 13.5, w 222, h 45` |
-| 标题右侧图片槽 | `x 258, y 0, w 100, h 72` |
-| 内容区 | `x 0, y 72, w 358, h 423` |
-| 内容内宽 | `318` |
-| 左右边距 | `20` |
-| 简单任务 | `358 x 108` |
-| 进度任务 | `358 x 161` |
-| 邀请任务 | `358 x 154` |
-| 任务状态区 | `x 20, y 24, w 318, h 36-40` |
-| 按钮 | `80 x 32` |
-| 简单任务描述 | `x 20, y 76` |
-| 进度节点区 | `x 20, y 80, w 318, h 57` |
-| 邀请权益卡 | `x 20, y 76, w 318, h 54` |
-
-允许调整：
-
-- 颜色
-- 标题区右侧图片
-- 奖励介质 icon
-- 头像图片
-- 按钮颜色
-
-不允许调整：
-
-- 外层尺寸
-- 任务行高度
-- 按钮尺寸
-- 内容内宽
-- 分割线位置
-- 进度节点区尺寸
-- 邀请权益卡尺寸
-- 把任务按钮改成全宽 CTA
-
-事件：
+### 状态模型示例
 
 ```js
-taskList.addEventListener("task-list-action", (event) => {
-  const taskId = event.detail.taskId;
-});
+const state = {
+  chances: campaignConfig.initialChances,
+  openedBoxIds: new Set(),
+  lastReward: null,
+  taskStatuses: Object.fromEntries(
+    campaignConfig.tasks.map((task) => [task.id, task.status])
+  )
+};
 ```
 
-### SharePanel
+### 交互规则
 
-用于分享渠道面板，包含渠道图标、复制链接、图片预览等。
+- `chances > 0` 时，未开启盒子可点击。
+- 点击盒子后，该盒子状态从 `closed` 变为 `opened`。
+- 每次开盒消耗 1 次机会。
+- 开盒结果使用 `Dialog`，不能只用 Toast。
+- `chances === 0` 时，盒子点击展示 Toast，引导完成任务。
+- 完成任务后增加开盒机会。
+- 5 个盒子必须保持固定布局，不因奖励结果或文案变化跳动。
 
-目录：
+### 图片占位
+
+后续补图时建议准备：
 
 ```txt
-component-library/components/share-panel/
+assets/bg-brazil-boxes.png
+assets/title-open-boxes.png
+assets/box-closed.png
+assets/box-opened.png
+assets/reward-icon.png
 ```
 
-### Dialog
+要求：
 
-用于奖励结果、领取结果、抽奖结果等强反馈。
+- 背景、标题、盒子图使用 PNG。
+- 盒子关闭和打开状态应同画布、同展示尺寸。
+- 盒子图不要带文字，奖励文案由 HTML 渲染。
+- 巴西视觉可以使用热带、节庆、足球、桑巴等元素，但不要让背景干扰盒子点击区域。
 
-目录：
+### QA 要点
 
-```txt
-component-library/components/dialog/
-```
-
-### Toast
-
-用于轻量操作反馈。
-
-目录：
-
-```txt
-component-library/components/toast/
-```
+- 首屏能看到剩余开盒次数和至少 3 个盒子。
+- 5 个盒子点击热区清晰。
+- 开盒后对应盒子状态真实变化。
+- 奖励 Dialog 明确展示奖励。
+- 次数用尽后有明确任务引导。
+- TaskList 使用组件库，不手写任务列表。
+- 320px 和 390px 下无横向滚动。
 
 ## 活动页代码放置规则
 
 不要把新的可运行活动案例放进 Skill 仓库。
 
-新的活动页应该创建在：
+新活动页应创建在：
 
 ```txt
 /Users/bytedance/Documents/Incentive Page Cases/{case-name}/
 ```
 
-例如：
+推荐结构：
 
 ```txt
-/Users/bytedance/Documents/Incentive Page Cases/jp-companion-savings/
+case-name/
+├── index.html
+├── styles.css
+├── script.js
+└── assets/
 ```
 
 Skill 仓库只保留：
@@ -478,47 +548,23 @@ Skill 仓库只保留：
 - fixtures
 - curated examples
 
-## 页面实现要求
-
-H5 页面建议结构：
-
-```txt
-case-name/
-├── index.html
-├── styles.css
-├── script.js
-└── assets/
-```
-
-实现要求：
-
-- `index.html` 引入组件库 CSS/JS。
-- `script.js` 中先定义 `campaignConfig`。
-- 页面模块用 render functions 或组件拆分。
-- 所有业务数据来自 config，不写死在 UI 组件里。
-- 每个主 CTA 都要有真实状态变化。
-- 奖励结果使用 Dialog。
-- 轻反馈使用 Toast。
-- 页面必须支持 320px 和 390px 宽度。
-- 不允许文字溢出、按钮裁切或横向滚动。
-
 ## Figma 使用规则
 
 当用户提供 Figma 链接时：
 
 1. 先读取 Figma 节点上下文。
-2. 如果用户要求严格参考组件，必须继续读取具体子层节点。
-3. Figma 组件若来源是 `FRAME`，就按 frame 结构和尺寸实现，不要强行转成实例或 wrapper。
+2. 如果用户要求严格参考组件，继续读取具体子层节点。
+3. Figma 组件若来源是 `FRAME`，按 frame 结构和尺寸实现。
 4. 颜色、图片可以按页面视觉风格换肤，但布局尺寸必须遵守组件契约。
-5. 组件沉淀后要更新 `component-library/components/{component}/component.md`。
+5. 组件沉淀后更新 `component-library/components/{component}/component.md`。
 
 ## 视觉资产规则
 
 - 背景、主视觉、玩法对象、贴纸、装饰图默认 PNG。
 - SVG 只用于图标。
 - 透明角色图可以通过 chroma-key 背景生成后本地扣图。
-- 项目引用的图片必须复制到目标项目或组件目录，不能只停留在临时生成目录。
-- 同一 IP 多等级图片必须同画布、同展示尺寸，避免升级时页面框架跳动。
+- 项目引用的图片必须复制到目标项目或组件目录。
+- 同一对象的多状态图片必须同画布、同展示尺寸，避免状态变化时页面跳动。
 
 ## QA Checklist
 
@@ -527,32 +573,14 @@ case-name/
 - 页面主链路是否完整。
 - 首屏是否说明用户是谁、进度在哪、今天做什么、做完得到什么。
 - 组件是否来自组件库或已记录 gap。
-- 任务列表是否保持 Figma 锁定尺寸。
 - 导航栏是否使用 `<incentive-top-navigation>`。
+- 任务列表是否使用 `<incentive-task-list>` 或遵循其组件契约。
 - Navigation icons 是否在 `32 x 32` 按钮中视觉居中。
-- 进度变化是否可见。
-- 奖励反馈是否明确。
+- 玩法状态变化是否真实可见。
+- 奖励结果是否使用 Dialog。
+- 轻反馈是否使用 Toast。
 - 320px / 390px 下是否无横向滚动。
 - 文案是否没有溢出或遮挡。
-
-## 发布到 GitHub
-
-由于某些本地目录可能不允许创建 `.git`，可以用临时发布目录：
-
-```bash
-mkdir /private/tmp/Incentive-Design-Skill-publish
-cd /private/tmp/Incentive-Design-Skill-publish
-git init
-git remote add origin https://github.com/{owner}/{repo}.git
-rsync -a --delete --exclude='.git/' --exclude='.DS_Store' --exclude='tmp/' \
-  "/Users/bytedance/Documents/Incentive Pages Vibe Coding Skill/" \
-  "/private/tmp/Incentive-Design-Skill-publish/"
-git add .
-git commit -m "Publish incentive design skill"
-git push origin main
-```
-
-如果使用 HTTPS，GitHub password 位置需要输入 Personal Access Token，不是账号密码。
 
 ## 当前已发布仓库
 
@@ -562,8 +590,8 @@ https://github.com/willemhwl94-del/Incentive-Design-Skill
 
 ## 维护建议
 
-- 每新增一个可复用组件，都要创建 `component.md`。
-- 每次从页面中沉淀组件，都要从页面私有 CSS/JS 中移除重复实现。
+- 新增可复用组件时，创建 `component.md`。
+- 从页面中沉淀组件后，移除页面私有重复实现。
 - 页面框架只描述结构和链路，不复制组件内部尺寸。
 - 组件内部尺寸归组件库维护。
 - 每次发现 Figma 还原偏差，都要回写到组件规范或 QA checklist。
