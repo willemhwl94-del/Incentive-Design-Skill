@@ -1,7 +1,0 @@
-Use this folder as the Incentive Design Agent Skill package.
-
-Read SKILL.md and AGENTS.md first.
-For activity page implementation, read skills/vibe-activity-page/SKILL.md.
-Before creating UI, search component-library/components for a matching component contract.
-Use H5 by default.
-Do not create new runnable cases inside this package; create them under /Users/bytedance/Documents/Incentive Page Cases/{case-name}/.
