@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "strategy_brief",
+  "producer_skill": "incentive-strategy-planner",
+  "target_skill": "vibe-activity-page",
+  "status": "ready",
+  "target_user": {
+    "segment": "new_users",
+    "age": "",
+    "gender": "",
+    "identity": "",
+    "traits": []
+  },
+  "region": "Brazil",
+  "campaign_goal": "new_user_acquisition",
+  "page_structure": {
+    "type": "single-gameplay-conversion-page",
+    "contents": [
+      {
+        "id": "header_area",
+        "name": "Head Area",
+        "description": "Introduce the campaign and create urgency.",
+        "fixed": false
+      },
+      {
+        "id": "reward_status_card",
+        "name": "Reward Status Card",
+        "description": "Show current balance, withdrawal threshold, progress, and redeem action.",
+        "fixed": true
+      },
+      {
+        "id": "gameplay_area",
+        "name": "Gameplay Area",
+        "description": "Main single gameplay interaction selected by the page builder.",
+        "fixed": false
+      },
+      {
+        "id": "action_area",
+        "name": "Action Area",
+        "description": "Bottom action group for more chances, primary action, QR or share entry, and chance count.",
+        "fixed": true
+      }
+    ]
+  },
+  "notes": [
+    "Use a simple invite-driven gameplay page unless the user requests a custom structure."
+  ],
+  "assumptions": [
+    "Age, gender, identity, and behavioral traits were not provided by the user, so they are left empty."
+  ],
+  "open_questions": []
+}

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Vibe Activity Page"
+  short_description: "Build reusable mobile campaign H5 journeys"
+  brand_color: "#FE2C55"
+  default_prompt: "Use $vibe-activity-page to create a mobile invite lottery activity journey with a main page, share/invite state, spin state, reward state, cashout-ready state, and matching Figma flow."
+policy:
+  allow_implicit_invocation: true

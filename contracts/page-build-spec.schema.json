@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "page-build-spec.schema.json",
+  "title": "PageBuildSpec",
+  "description": "Output of vibe-activity-page. It defines the page architecture, locked components, generated code, and final page delivery details.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "producer_skill",
+    "target_skill",
+    "status",
+    "source_strategy_summary",
+    "canvas",
+    "page_architecture",
+    "component_contracts",
+    "layout_slots",
+    "content_config",
+    "implementation",
+    "qa_requirements",
+    "assumptions",
+    "open_questions"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^1\\." },
+    "artifact_type": { "const": "page_build_spec" },
+    "producer_skill": { "const": "vibe-activity-page" },
+    "target_skill": { "const": "final_delivery" },
+    "status": { "enum": ["draft", "ready", "blocked"] },
+    "source_strategy_summary": {
+      "type": "object",
+      "required": ["target_user", "region", "campaign_goal", "page_structure"],
+      "properties": {
+        "target_user": {
+          "type": "object",
+          "required": ["segment", "age", "gender", "identity", "traits"],
+          "properties": {
+            "segment": { "type": "string" },
+            "age": { "type": "string" },
+            "gender": { "type": "string" },
+            "identity": { "type": "string" },
+            "traits": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": false
+        },
+        "region": { "type": "string" },
+        "campaign_goal": { "type": "string" },
+        "page_structure": {
+          "type": "object",
+          "required": ["type", "contents"],
+          "properties": {
+            "type": { "type": "string" },
+            "contents": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "name", "description"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "fixed": { "type": "boolean" }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "selected_gameplay": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "canvas": {
+      "type": "object",
+      "required": ["width", "height", "baseline_width", "responsive_behavior"],
+      "properties": {
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "baseline_width": { "type": "number" },
+        "responsive_behavior": { "type": "string" },
+        "safe_area": {
+          "type": "object",
+          "properties": {
+            "top": { "type": "number" },
+            "bottom": { "type": "number" },
+            "left": { "type": "number" },
+            "right": { "type": "number" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "page_architecture": {
+      "type": "object",
+      "required": ["framework", "sections", "primary_flow"],
+      "properties": {
+        "framework": { "type": "string" },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "role", "component", "fixed"],
+            "properties": {
+              "id": { "type": "string" },
+              "role": { "type": "string" },
+              "component": { "type": "string" },
+              "fixed": { "type": "boolean" },
+              "order": { "type": "number" },
+              "notes": { "type": "string" }
+            },
+            "additionalProperties": true
+          },
+          "minItems": 1
+        },
+        "primary_flow": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 2
+        }
+      },
+      "additionalProperties": true
+    },
+    "component_contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "component", "strictness", "locked", "props"],
+        "properties": {
+          "id": { "type": "string" },
+          "component": { "type": "string" },
+          "strictness": { "enum": ["strict", "semi_strict", "flexible"] },
+          "source": { "type": "string" },
+          "locked": {
+            "type": "object",
+            "required": ["structure", "size", "position", "copy"],
+            "properties": {
+              "structure": { "type": "boolean" },
+              "size": { "type": "boolean" },
+              "position": { "type": "boolean" },
+              "copy": { "type": "boolean" },
+              "color": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          },
+          "props": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "qa_rules": {
+            "type": "array",
+            "items": { "type": "string" },
+            "default": []
+          }
+        },
+        "additionalProperties": true
+      },
+      "minItems": 1
+    },
+    "layout_slots": {
+      "type": "object",
+      "required": ["background_slot", "title_art_box", "asset_card_box", "gameplay_asset_box", "bottom_actions_box"],
+      "properties": {
+        "background_slot": { "$ref": "#/$defs/box" },
+        "title_art_box": { "$ref": "#/$defs/box" },
+        "asset_card_box": { "$ref": "#/$defs/box" },
+        "gameplay_asset_box": { "$ref": "#/$defs/box" },
+        "bottom_actions_box": { "$ref": "#/$defs/box" },
+        "reserved_gaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "from", "to", "rule"],
+            "properties": {
+              "id": { "type": "string" },
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "rule": { "type": "string" }
+            },
+            "additionalProperties": true
+          },
+          "default": []
+        }
+      },
+      "additionalProperties": true
+    },
+    "content_config": {
+      "type": "object",
+      "required": ["title", "reward", "cta", "timer", "share"],
+      "properties": {
+        "title": { "type": "string" },
+        "reward": { "type": "object", "additionalProperties": true },
+        "cta": { "type": "object", "additionalProperties": true },
+        "timer": { "type": "object", "additionalProperties": true },
+        "share": { "type": "object", "additionalProperties": true }
+      },
+      "additionalProperties": true
+    },
+    "implementation": {
+      "type": "object",
+      "required": ["stack", "entry_file", "generated_files", "asset_directory"],
+      "properties": {
+        "stack": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "entry_file": { "type": "string" },
+        "generated_files": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "asset_directory": { "type": "string" },
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        }
+      },
+      "additionalProperties": true
+    },
+    "asset_generation_plan": {
+      "type": "object",
+      "required": ["visual_freedom", "asset_requests", "locked_visual_rules"],
+      "properties": {
+        "visual_freedom": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "asset_requests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "slot", "dimensions", "requirements"],
+            "properties": {
+              "id": { "type": "string" },
+              "type": { "type": "string" },
+              "slot": { "type": "string" },
+              "dimensions": { "$ref": "#/$defs/size" },
+              "requirements": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "locked_visual_rules": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "qa_requirements": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "assumptions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "box": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "width": { "type": "number" },
+        "height": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "size": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "number" },
+        "height": { "type": "number" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

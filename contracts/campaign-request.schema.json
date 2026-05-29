@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "campaign-request.schema.json",
+  "title": "CampaignRequest",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "producer_skill",
+    "target_skill",
+    "status",
+    "raw_request",
+    "region",
+    "audience",
+    "business_goal",
+    "assumptions",
+    "open_questions"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^1\\." },
+    "artifact_type": { "const": "campaign_request" },
+    "producer_skill": { "type": "string" },
+    "target_skill": { "type": "string" },
+    "status": { "enum": ["draft", "ready", "blocked"] },
+    "raw_request": { "type": "string" },
+    "region": { "type": "string" },
+    "audience": { "type": "string" },
+    "business_goal": { "type": "string" },
+    "known_constraints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "available_inputs": {
+      "type": "object",
+      "additionalProperties": true,
+      "default": {}
+    },
+    "assumptions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

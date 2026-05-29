@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Samba Football Lucky Spin</title>
+    <link rel="stylesheet" href="./share-panel.css" />
+    <style>
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        background: #0a713d;
+        font-family: "TikTok Sans", system-ui, -apple-system, sans-serif;
+        letter-spacing: 0;
+      }
+      body { display: flex; justify-content: center; }
+      button {
+        border: 0;
+        font: inherit;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+      .viewport {
+        width: 390px;
+        height: 844px;
+        overflow: hidden;
+        background: #0a713d;
+      }
+      .stage {
+        position: relative;
+        width: 390px;
+        height: 844px;
+        overflow: hidden;
+        color: #123320;
+        transform-origin: top left;
+        background: url("./assets/bg-brazil-samba-football.svg") center / cover no-repeat #0a713d;
+      }
+      .top-navigation {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 40;
+        width: 390px;
+        height: 91px;
+      }
+      .system-status-bar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 390px;
+        height: 47px;
+      }
+      .status-time {
+        position: absolute;
+        left: 45px;
+        top: 18.5px;
+        color: #1b130c;
+        font-size: 15px;
+        line-height: 21px;
+        font-weight: 600;
+      }
+      .status-icons {
+        position: absolute;
+        left: 280px;
+        top: 20px;
+        display: flex;
+        width: 78px;
+        height: 13px;
+        align-items: center;
+        gap: 7px;
+        color: #1b130c;
+      }
+      .status-icons svg { display: block; flex: none; }
+      .cellular-icon { width: 19px; height: 12px; }
+      .wifi-icon { width: 17px; height: 12px; }
+      .battery-icon { width: 27px; height: 13px; }
+      .nav-bar {
+        position: absolute;
+        left: 0;
+        top: 47px;
+        width: 390px;
+        height: 44px;
+      }
+      .nav-content {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: flex;
+        width: 390px;
+        height: 44px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+      }
+      .nav-actions {
+        display: flex;
+        width: 72px;
+        height: 32px;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+      .nav-icon-button {
+        display: flex;
+        width: 32px;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+        border: 1px solid #ffffff;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.6);
+        color: #1b130c;
+        line-height: 0;
+      }
+      .nav-icon-button svg { display: block; flex: none; width: 20px; height: 20px; }
+      .nav-title-area {
+        position: absolute;
+        left: 96px;
+        top: 0;
+        width: 213px;
+        height: 44px;
+        pointer-events: none;
+      }
+      .title {
+        position: absolute;
+        left: 11px;
+        top: 60px;
+        z-index: 50;
+        width: 368px;
+        height: 96px;
+        margin: 0;
+        pointer-events: none;
+      }
+      .title-art {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .secondary-info {
+        position: absolute;
+        left: 86px;
+        top: 156px;
+        z-index: 12;
+        display: grid;
+        width: 218px;
+        height: 28px;
+        place-items: center;
+        margin: 0;
+        color: #ffffff;
+        text-shadow: 0 2px 0 rgba(7, 59, 42, 0.8);
+        font-size: 12px;
+        line-height: 16px;
+        font-weight: 400;
+      }
+      .asset-image {
+        position: absolute;
+        left: 32px;
+        top: 188px;
+        z-index: 12;
+        width: 326px;
+        height: 130px;
+        padding: 0;
+        border-radius: 32px;
+        background: var(--asset-card-bg, #ffffff);
+      }
+      .asset-top {
+        position: absolute;
+        left: 16px;
+        top: 12px;
+        width: 294px;
+        height: 50px;
+      }
+      .asset-balance {
+        position: absolute;
+        left: 0;
+        top: 7px;
+        width: 200px;
+        height: 36px;
+      }
+      .avatar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 50%;
+        border: 1px solid var(--asset-avatar-border, rgba(255, 255, 255, 0.64));
+        background: var(--asset-avatar-bg, #e5e6eb);
+        color: transparent;
+      }
+      .asset-copy {
+        position: absolute;
+        left: 44px;
+        top: 1.5px;
+        width: 156px;
+        height: 33px;
+        color: var(--asset-text, #3c271f);
+      }
+      .asset-title {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 156px;
+        height: 11px;
+        margin: 0;
+        font-size: 11px;
+        line-height: 11px;
+        font-weight: 500;
+      }
+      .asset-value {
+        position: absolute;
+        left: 0;
+        top: 11px;
+        display: flex;
+        width: max-content;
+        height: 22px;
+        align-items: center;
+        gap: 2px;
+        font-size: 22px;
+        line-height: 26.4px;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+      .currency {
+        display: block;
+        width: max-content;
+        height: 22px;
+        flex: none;
+      }
+      .amount {
+        display: block;
+        width: max-content;
+        height: 22px;
+        flex: none;
+        overflow: visible;
+        text-overflow: clip;
+        white-space: nowrap;
+      }
+      .withdraw {
+        position: absolute;
+        left: 216px;
+        top: 11px;
+        display: grid;
+        width: 78px;
+        height: 28px;
+        place-items: center;
+        padding: 0 8px;
+        border-radius: 999px;
+        background: var(--asset-button-bg, #fbd106);
+        color: var(--asset-button-text, #000000);
+        font-size: 12px;
+        line-height: 16px;
+        font-weight: 600;
+      }
+      .asset-extra {
+        position: absolute;
+        left: 16px;
+        top: 64px;
+        width: 294px;
+        height: 50px;
+      }
+      .asset-progress-copy {
+        position: absolute;
+        left: 4px;
+        top: 13px;
+        width: 196px;
+        height: 18px;
+        margin: 0;
+        color: var(--asset-subtext, rgba(0, 0, 0, 0.48));
+        font-size: 14px;
+        line-height: 18.2px;
+        font-weight: 400;
+        white-space: nowrap;
+      }
+      .asset-progress {
+        position: absolute;
+        left: 4px;
+        top: 31px;
+        width: 230px;
+        height: 20px;
+      }
+      .asset-progress-track {
+        position: absolute;
+        left: 0;
+        top: 4px;
+        width: 230px;
+        height: 12px;
+        overflow: hidden;
+        border-radius: 16px;
+        background: var(--asset-progress-track, rgba(0, 0, 0, 0.08));
+      }
+      .asset-progress-fill {
+        position: absolute;
+        left: 1px;
+        top: 5px;
+        width: 166px;
+        height: 10px;
+        border-radius: 100px;
+        background: linear-gradient(90deg, var(--asset-progress-start, #ff5324) 0%, var(--asset-progress-end, #fff429) 100%);
+      }
+      .asset-reward {
+        position: absolute;
+        left: 228px;
+        top: 0;
+        width: 62px;
+        height: 50px;
+      }
+      .asset-reward-icon {
+        position: absolute;
+        left: 6px;
+        top: 0;
+        display: grid;
+        width: 50px;
+        height: 50px;
+        place-items: center;
+      }
+      .asset-reward-coin {
+        display: grid;
+        width: 40px;
+        height: 40px;
+        place-items: center;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 28%, var(--asset-coin-light, #fff8be) 0 12%, var(--asset-coin-main, #fff429) 28%, var(--asset-coin-mid, #ffb32b) 58%, var(--asset-coin-dark, #f07903) 100%);
+        color: var(--asset-coin-text, #8a3b00);
+        font-size: 18px;
+        line-height: 22px;
+        font-weight: 900;
+        box-shadow: 0 0 5px rgba(219, 255, 100, 0.63);
+      }
+      .asset-threshold {
+        position: absolute;
+        left: 0;
+        top: 32px;
+        display: flex;
+        width: 62px;
+        height: 18px;
+        align-items: center;
+        justify-content: center;
+        padding: 2px 4px;
+        border-radius: 32px;
+        background: var(--asset-threshold-bg, #fff8b8);
+        color: var(--asset-threshold-text, #3c271f);
+        font-size: 10px;
+        line-height: 12.5px;
+        font-weight: 700;
+        letter-spacing: 0.1px;
+        white-space: nowrap;
+      }
+      .gameplay {
+        position: absolute;
+        left: 32px;
+        top: 342px;
+        z-index: 12;
+        width: 326px;
+        height: 326px;
+        text-align: center;
+      }
+      .wheel-rotor {
+        position: relative;
+        z-index: 1;
+        width: 326px;
+        height: 326px;
+        transform: rotate(0deg);
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+      .gameplay-asset {
+        display: block;
+        width: 326px;
+        height: 326px;
+        object-fit: contain;
+      }
+      .gameplay-pointer {
+        position: absolute;
+        left: 50%;
+        top: -8px;
+        z-index: 4;
+        display: block;
+        width: 58px;
+        height: 78px;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+      .gameplay-hitbox {
+        position: absolute;
+        left: 50%;
+        top: 115px;
+        z-index: 6;
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        background: transparent;
+        color: transparent;
+        transform: translateX(-50%);
+      }
+      .result-toast {
+        position: absolute;
+        left: 50%;
+        bottom: -8px;
+        z-index: 8;
+        display: none;
+        width: 196px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        border: 2px solid #ffffff;
+        border-radius: 999px;
+        background: #073b2a;
+        color: #ffe24a;
+        transform: translateX(-50%);
+        font-size: 15px;
+        line-height: 19px;
+        font-weight: 700;
+        text-align: center;
+      }
+      .result-toast.is-visible { display: flex; }
+      .btn-group {
+        position: absolute;
+        left: 0;
+        top: 668px;
+        z-index: 20;
+        width: 390px;
+        height: 120px;
+        color: #ffffff;
+      }
+      .side-button {
+        position: absolute;
+        top: 20px;
+        width: 80px;
+        height: 58px;
+        padding: 0;
+        background: transparent;
+      }
+      .side-button.left { left: 0; }
+      .side-button.right { left: 310px; }
+      .side-bg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 80px;
+        height: 56px;
+        border: 3px solid #ffffff;
+        background: #1c3f97;
+        box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.28), 0 7px 0 #073b2a;
+      }
+      .left .side-bg { border-radius: 0 22px 22px 0; }
+      .right .side-bg { border-radius: 22px 0 0 22px; }
+      .side-label {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: flex;
+        width: 80px;
+        height: 56px;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        text-align: center;
+        text-shadow: 0 2px 0 #073b2a;
+        white-space: pre-line;
+        font-size: 15px;
+        line-height: 19px;
+        font-weight: 700;
+      }
+      .main-button {
+        position: absolute;
+        left: 86px;
+        top: -1px;
+        width: 218px;
+        height: 96px;
+        padding: 0;
+        background: transparent;
+      }
+      .main-bg {
+        position: absolute;
+        left: 11px;
+        top: 12px;
+        width: 196px;
+        height: 72px;
+        border: 4px solid #ffffff;
+        border-radius: 28px;
+        background: #ffe24a;
+        box-shadow: inset 0 5px 0 rgba(255, 255, 255, 0.45), 0 8px 0 #0b7d44;
+      }
+      .main-label {
+        position: absolute;
+        left: 11px;
+        top: 12px;
+        display: flex;
+        width: 196px;
+        height: 72px;
+        align-items: center;
+        justify-content: center;
+        color: #073b2a;
+        text-align: center;
+        font-size: 24px;
+        line-height: 30px;
+        font-weight: 700;
+      }
+      .chance-text {
+        position: absolute;
+        left: 136px;
+        top: 106px;
+        width: 119px;
+        height: 18px;
+        margin: 0;
+        color: #ffffff;
+        text-align: center;
+        text-shadow: 0 2px 0 #073b2a;
+        font-size: 14px;
+        line-height: 18px;
+        font-weight: 400;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      @media (max-width: 389px) {
+        .viewport {
+          width: 100vw;
+          height: calc(844px * (100vw / 390));
+        }
+        .stage { transform: scale(calc(100vw / 390)); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 1ms !important;
+          transition-duration: 1ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="viewport">
+      <main class="stage" id="page-root"></main>
+    </div>
+
+    <script src="./share-panel.js"></script>
+    <script>
+      const pageConfig = {
+        title: "Samba Football Lucky Spin",
+        titleAssetUrl: "./assets/title-brazil-samba-football.svg",
+        countdownLabel: "Ends in: ",
+        countdownSeconds: 279840,
+        assetTitle: "My rewards",
+        assetCurrency: "R$",
+        assetActionLabel: "Check",
+        assetProgressText: "10,000 coins to cash out",
+        assetThresholdText: "10K coins",
+        assetProgressMaxWidth: 228,
+        assetTheme: {
+          cardBg: "#1c3f97",
+          text: "#ffffff",
+          subtext: "rgba(255, 255, 255, 0.78)",
+          avatarBg: "#0b7d44",
+          avatarBorder: "rgba(255, 255, 255, 0.72)",
+          buttonBg: "#ffe24a",
+          buttonText: "#073b2a",
+          progressTrack: "rgba(255, 255, 255, 0.26)",
+          progressStart: "#0bcd72",
+          progressEnd: "#ffe24a",
+          thresholdBg: "#fff8b8",
+          thresholdText: "#073b2a",
+          coinLight: "#fff8be",
+          coinMain: "#fff429",
+          coinMid: "#ffb32b",
+          coinDark: "#f07903",
+          coinText: "#8a3b00",
+        },
+        balance: 0,
+        threshold: 10000,
+        unit: "coins",
+        chances: 5,
+        primaryLabel: "Spin",
+        leftAction: "More\nChances",
+        rightAction: "Rules",
+        gameplayAssetUrl: "./assets/spin-wheel-brazil-body.svg",
+        pointerAssetUrl: "./assets/spin-wheel-pointer.svg",
+        rewards: [800, 300, 1200, 500, 2000, 600, 100, 900],
+      };
+
+      const formatCoins = (value) => `${Number(value).toLocaleString("en-US")} ${pageConfig.unit}`;
+      const toKebab = (value) => value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+      const renderThemeVars = (theme, prefix) =>
+        Object.entries(theme)
+          .map(([key, value]) => `--${prefix}-${toKebab(key)}: ${value}`)
+          .join("; ");
+      const formatDuration = (seconds) => {
+        const safeSeconds = Math.max(0, seconds);
+        const days = Math.floor(safeSeconds / 86400);
+        const hours = Math.floor((safeSeconds % 86400) / 3600);
+        const minutes = Math.floor((safeSeconds % 3600) / 60);
+        return `${days}d:${hours}h:${minutes}m`;
+      };
+      const getProgressWidth = (balance, threshold, maxWidth) => {
+        const ratio = Math.max(0, Math.min(Number(balance) / Number(threshold), 1));
+        return Math.round(ratio * maxWidth);
+      };
+      const formatProgressText = (balance, threshold, unit) => {
+        const remaining = Math.max(Number(threshold) - Number(balance), 0);
+        return remaining > 0 ? `${remaining.toLocaleString("en-US")} ${unit} to cash out` : "Ready to cash out";
+      };
+
+      function renderTopNavigation() {
+        return `
+          <nav class="top-navigation" aria-label="Top navigation">
+            <div class="system-status-bar" aria-hidden="true">
+              <span class="status-time">8:00</span>
+              <span class="status-icons">
+                <svg class="cellular-icon" viewBox="0 0 19 12" aria-hidden="true">
+                  <rect x="0" y="7" width="3" height="5" rx="1" fill="currentColor"></rect>
+                  <rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"></rect>
+                  <rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="currentColor"></rect>
+                  <rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"></rect>
+                </svg>
+                <svg class="wifi-icon" viewBox="0 0 17 12" aria-hidden="true">
+                  <path d="M1 3.9C5.2.1 11.8.1 16 3.9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+                  <path d="M4.1 7C6.5 4.9 10.5 4.9 12.9 7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+                  <path d="M7.2 10.1C7.9 9.5 9.1 9.5 9.8 10.1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+                </svg>
+                <svg class="battery-icon" viewBox="0 0 27 13" aria-hidden="true">
+                  <rect x="0.5" y="1" width="22" height="11" rx="3" fill="none" stroke="currentColor"></rect>
+                  <rect x="3" y="3.5" width="16" height="6" rx="1.6" fill="currentColor"></rect>
+                  <rect x="24" y="4.2" width="2.5" height="4.6" rx="1" fill="currentColor"></rect>
+                </svg>
+              </span>
+            </div>
+            <div class="nav-bar">
+              <div class="nav-content">
+                <button class="nav-icon-button" type="button" aria-label="Back">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.2 6.7 10l5.8 5.8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"></path></svg>
+                </button>
+                <div class="nav-actions">
+                  <button class="nav-icon-button" type="button" aria-label="Music">
+                    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M13.3 3.1v9.4a3 3 0 1 1-1.8-2.7V5.1l5.1-1.2v2.3l-3.3.8Z" fill="currentColor"></path></svg>
+                  </button>
+                  <button class="nav-icon-button" type="button" aria-label="Help">
+                    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13.1v-.6c0-1 .5-1.7 1.5-2.4.9-.7 1.4-1.2 1.4-2.1 0-1.2-1-2-2.5-2-1.4 0-2.5.7-3 1.9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path><circle cx="10" cy="16.1" r="1.2" fill="currentColor"></circle></svg>
+                  </button>
+                </div>
+                <div class="nav-title-area" aria-hidden="true"></div>
+              </div>
+            </div>
+          </nav>
+        `;
+      }
+
+      function renderHeader(config) {
+        return `
+          <h1 class="title"><img class="title-art" src="${config.titleAssetUrl}" alt="${config.title}"></h1>
+          <p class="secondary-info" data-countdown-label="${config.countdownLabel}" data-countdown-seconds="${config.countdownSeconds}" aria-live="polite"></p>
+        `;
+      }
+
+      function renderAssetImage(config) {
+        return `
+          <section class="asset-image" style="${renderThemeVars(config.assetTheme, "asset")}" aria-label="Asset card">
+            <div class="asset-top">
+              <div class="asset-balance">
+                <div class="avatar" aria-hidden="true"></div>
+                <div class="asset-copy">
+                  <p class="asset-title">${config.assetTitle}</p>
+                  <strong class="asset-value"><span class="currency">${config.assetCurrency}</span><span class="amount" data-balance>${Number(config.balance).toLocaleString("en-US")}</span></strong>
+                </div>
+              </div>
+              <button class="withdraw" type="button" data-withdraw>${config.assetActionLabel}</button>
+            </div>
+            <div class="asset-extra">
+              <p class="asset-progress-copy" data-progress-text>${formatProgressText(config.balance, config.threshold, config.unit)}</p>
+              <div class="asset-progress" aria-label="Asset progress">
+                <div class="asset-progress-track"></div>
+                <div class="asset-progress-fill" data-progress style="width: ${getProgressWidth(config.balance, config.threshold, config.assetProgressMaxWidth)}px"></div>
+              </div>
+              <div class="asset-reward" aria-hidden="true">
+                <div class="asset-reward-icon"><div class="asset-reward-coin">C</div></div>
+                <div class="asset-threshold">${config.assetThresholdText}</div>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      function renderGameplay(config) {
+        return `
+          <section class="gameplay" aria-label="Lucky spin wheel">
+            <div class="wheel-rotor" aria-hidden="true">
+              <img class="gameplay-asset" src="${config.gameplayAssetUrl}" alt="">
+            </div>
+            <img class="gameplay-pointer" src="${config.pointerAssetUrl}" alt="Spin wheel pointer">
+            <button class="gameplay-hitbox" type="button" aria-label="Spin the wheel">Spin the wheel</button>
+            <p class="result-toast" data-result aria-live="polite"></p>
+            <p class="sr-only" data-result-sr aria-live="polite"></p>
+          </section>
+        `;
+      }
+
+      function renderBottomActions(config) {
+        return `
+          <nav class="btn-group" aria-label="Campaign actions">
+            <button class="side-button left" type="button" data-more-chances>
+              <span class="side-bg"></span>
+              <span class="side-label">${config.leftAction}</span>
+            </button>
+            <button class="main-button" type="button" data-primary>
+              <span class="main-bg"></span>
+              <span class="main-label">${config.primaryLabel}</span>
+            </button>
+            <button class="side-button right" type="button" data-rules>
+              <span class="side-bg"></span>
+              <span class="side-label">${config.rightAction}</span>
+            </button>
+            <p class="chance-text" data-chances>Chances left: ${config.chances}</p>
+          </nav>
+        `;
+      }
+
+      const state = {
+        balance: pageConfig.balance,
+        chances: pageConfig.chances,
+        activeIndex: 0,
+        currentRotation: 0,
+        isSpinning: false,
+      };
+
+      const root = document.querySelector("#page-root");
+      root.innerHTML = [
+        renderTopNavigation(),
+        renderHeader(pageConfig),
+        renderAssetImage(pageConfig),
+        renderGameplay(pageConfig),
+        renderBottomActions(pageConfig),
+      ].join("");
+
+      const sharePanel = window.createSharePanel({
+        mount: root,
+        guideImage: "brazil-samba-share-guide.svg",
+        theme: {
+          card: "#E8FFF1",
+          "primary-text": "#064A2A",
+          "secondary-text": "rgba(6, 74, 42, 0.72)",
+          "step-bg": "#0A7A39",
+          "step-text": "#FFD447",
+          divider: "rgba(10, 122, 57, 0.26)",
+        },
+        instructions: [
+          "Share the Samba Football link with friends in Brazil.",
+          "Friends open the link and join the lucky spin match.",
+          "Every successful invite gives you more spin chances.",
+        ],
+        disclaimer: "* Spin chances and rewards are credited after invite validation.",
+        messages: {
+          copied: "Samba invite link copied",
+          copyFailed: "Copy failed. Please try again.",
+          more: "More share options opened",
+          shared: "Share your Samba spin",
+        },
+      });
+
+      const countdown = document.querySelector(".secondary-info");
+      let remainingSeconds = Number(countdown.dataset.countdownSeconds || 0);
+      const countdownLabel = countdown.dataset.countdownLabel || "";
+      const renderCountdown = () => {
+        countdown.textContent = `${countdownLabel}${formatDuration(remainingSeconds)}`;
+        if (remainingSeconds > 0) remainingSeconds -= 1;
+      };
+      renderCountdown();
+      window.setInterval(renderCountdown, 1000);
+
+      const balanceNode = document.querySelector("[data-balance]");
+      const chanceNode = document.querySelector("[data-chances]");
+      const progressNode = document.querySelector("[data-progress]");
+      const progressTextNode = document.querySelector("[data-progress-text]");
+      const resultNode = document.querySelector("[data-result]");
+      const resultSrNode = document.querySelector("[data-result-sr]");
+      const wheelRotor = document.querySelector(".wheel-rotor");
+      const spinButtons = document.querySelectorAll(".gameplay-hitbox, [data-primary]");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function updateVault() {
+        balanceNode.textContent = Number(state.balance).toLocaleString("en-US");
+        progressNode.style.width = `${getProgressWidth(state.balance, pageConfig.threshold, pageConfig.assetProgressMaxWidth)}px`;
+        progressTextNode.textContent = formatProgressText(state.balance, pageConfig.threshold, pageConfig.unit);
+        chanceNode.textContent = `Chances left: ${state.chances}`;
+        document.querySelector("[data-withdraw]").textContent = pageConfig.assetActionLabel;
+      }
+
+      function setSpinDisabled(disabled) {
+        spinButtons.forEach((button) => {
+          button.disabled = disabled;
+          button.toggleAttribute("aria-disabled", disabled);
+        });
+      }
+
+      function spin() {
+        if (state.isSpinning || state.chances <= 0) return;
+        state.isSpinning = true;
+        state.chances -= 1;
+        setSpinDisabled(true);
+        resultNode.classList.remove("is-visible");
+        updateVault();
+
+        state.activeIndex = (state.activeIndex + 3) % pageConfig.rewards.length;
+        const segmentAngle = 360 / pageConfig.rewards.length;
+        const targetAngle = -(state.activeIndex * segmentAngle);
+        const normalizedCurrent = ((state.currentRotation % 360) + 360) % 360;
+        const normalizedTarget = ((targetAngle % 360) + 360) % 360;
+        const deltaToTarget = (normalizedTarget - normalizedCurrent + 360) % 360;
+        state.currentRotation += (reducedMotion ? 0 : 5) * 360 + deltaToTarget;
+        wheelRotor.style.transition = reducedMotion ? "none" : "transform 3200ms cubic-bezier(.12,.78,.18,1)";
+        wheelRotor.style.transform = `rotate(${state.currentRotation}deg)`;
+
+        window.setTimeout(() => {
+          const reward = pageConfig.rewards[state.activeIndex];
+          state.balance += reward;
+          resultNode.textContent = `+${formatCoins(reward)}`;
+          resultSrNode.textContent = `Reward received: ${formatCoins(reward)}`;
+          resultNode.classList.add("is-visible");
+          state.isSpinning = false;
+          setSpinDisabled(state.chances <= 0);
+          updateVault();
+        }, reducedMotion ? 80 : 3250);
+      }
+
+      spinButtons.forEach((button) => button.addEventListener("click", spin));
+      document.querySelector("[data-more-chances]").addEventListener("click", sharePanel.open);
+      document.querySelector("[data-rules]").addEventListener("click", () => {
+        resultNode.textContent = "Spin the wheel to win coins";
+        resultNode.classList.add("is-visible");
+      });
+      document.querySelector("[data-withdraw]").addEventListener("click", () => {
+        resultNode.textContent = state.balance >= pageConfig.threshold ? "Ready to cash out" : "Keep spinning to collect coins";
+        resultNode.classList.add("is-visible");
+      });
+    </script>
+  </body>
+</html>

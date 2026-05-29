@@ -1,0 +1,7 @@
+interface:
+  display_name: "Figma Main Flow"
+  short_description: "Create screenshot-based Figma main-flow annotations."
+  default_prompt: "Use $figma-main-flow-annotator to capture the key browser-rendered states of an activity page and place them in Figma as a main interaction flow with page names, arrows, and user-behavior notes."
+
+policy:
+  allow_implicit_invocation: true

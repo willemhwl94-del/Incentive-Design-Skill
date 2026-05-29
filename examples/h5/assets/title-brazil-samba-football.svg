@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="192" viewBox="0 0 736 192" fill="none">
+  <path d="M34 44C95 8 188 8 252 43C329 4 440 4 511 45C591 17 665 35 705 82C669 145 595 170 515 147C438 189 327 190 253 150C178 184 90 176 36 126C20 96 19 68 34 44Z" fill="#0B7D44"/>
+  <path d="M51 58C106 31 184 31 246 62C322 29 431 28 498 63C568 40 638 51 682 91C647 136 581 153 514 132C438 169 330 170 254 135C185 164 105 158 55 119C42 96 41 75 51 58Z" fill="#FFE24A"/>
+  <path d="M82 71C135 48 196 56 245 84C318 51 424 51 489 84C548 64 610 72 647 102C613 124 557 132 506 116C431 151 328 152 257 119C196 143 129 138 88 111C76 94 75 82 82 71Z" fill="#1C3F97"/>
+  <text x="368" y="88" text-anchor="middle" font-family="Arial Black, PingFang SC, Microsoft YaHei, sans-serif" font-size="48" font-weight="900" fill="#FFFFFF" stroke="#073B2A" stroke-width="8" paint-order="stroke">SAMBA FOOTBALL</text>
+  <text x="368" y="135" text-anchor="middle" font-family="Arial Black, PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="900" fill="#FFE24A" stroke="#073B2A" stroke-width="7" paint-order="stroke">LUCKY SPIN</text>
+  <circle cx="118" cy="94" r="27" fill="#FFFFFF" stroke="#073B2A" stroke-width="6"/>
+  <path d="M118 70L126 88L146 90L131 103L136 123L118 112L100 123L105 103L90 90L110 88L118 70Z" fill="#111111"/>
+  <path d="M616 68C646 72 663 94 661 123" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round"/>
+  <path d="M595 80C625 87 640 105 640 132" stroke="#FFE24A" stroke-width="9" stroke-linecap="round"/>
+</svg>

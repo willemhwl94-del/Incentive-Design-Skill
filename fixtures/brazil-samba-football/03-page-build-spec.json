@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "page_build_spec",
+  "producer_skill": "vibe-activity-page",
+  "target_skill": "final_delivery",
+  "status": "ready",
+  "source_strategy_summary": {
+    "target_user": {
+      "segment": "new_users",
+      "age": "",
+      "gender": "",
+      "identity": "",
+      "traits": ["Brazil football and samba affinity"]
+    },
+    "region": "Brazil",
+    "campaign_goal": "new_user_acquisition",
+    "page_structure": {
+      "type": "single-gameplay-conversion-page",
+      "contents": [
+        {
+          "id": "header_area",
+          "name": "Head Area",
+          "description": "展示桑巴足球活动主题和核心转盘玩法。",
+          "fixed": false
+        },
+        {
+          "id": "countdown",
+          "name": "Countdown",
+          "description": "Use a real countdown timer to create urgency.",
+          "fixed": true
+        },
+        {
+          "id": "asset_card",
+          "name": "Coin Vault",
+          "description": "Show current coin balance, withdrawal threshold, and withdrawal action.",
+          "fixed": true
+        },
+        {
+          "id": "gameplay_area",
+          "name": "抽奖大转盘",
+          "description": "用户抽奖获得金币，并计入小金库总额。",
+          "fixed": false
+        }
+      ]
+    },
+    "selected_gameplay": "spin_wheel"
+  },
+  "canvas": {
+    "width": 390,
+    "height": 844,
+    "baseline_width": 390,
+    "responsive_behavior": "scale_canvas_for_narrower_viewports",
+    "safe_area": {
+      "top": 0,
+      "right": 0,
+      "bottom": 0,
+      "left": 0
+    }
+  },
+  "page_architecture": {
+    "framework": "single-gameplay-conversion-page",
+    "sections": [
+      { "id": "top_navigation", "role": "navigation", "component": "TopNavigation", "fixed": true, "order": 1 },
+      { "id": "title", "role": "campaign_identity", "component": "PrimaryTitle", "fixed": false, "order": 2 },
+      { "id": "countdown", "role": "urgency", "component": "CountdownText", "fixed": true, "order": 3 },
+      { "id": "asset_card", "role": "cashout_progress", "component": "AssetImage", "fixed": true, "order": 4 },
+      { "id": "gameplay", "role": "main_interaction", "component": "SpinWheelImagePair", "fixed": false, "order": 5 },
+      { "id": "bottom_actions", "role": "conversion_actions", "component": "BottomActionTriple", "fixed": true, "order": 6 }
+    ],
+    "primary_flow": ["活动标题", "倒计时", "小金库", "抽奖大转盘", "提现或获取更多机会"]
+  },
+  "component_contracts": [
+    {
+      "id": "top_navigation",
+      "component": "TopNavigation",
+      "strictness": "strict",
+      "source": "Figma navigation component contract",
+      "locked": { "structure": true, "size": true, "position": true, "copy": true, "color": true },
+      "props": { "variant": "dark two-action" },
+      "qa_rules": ["Do not recolor the navigation to match the campaign theme."]
+    },
+    {
+      "id": "asset_card",
+      "component": "AssetImage",
+      "strictness": "strict",
+      "source": "Figma AssetImage contract",
+      "locked": { "structure": true, "size": true, "position": true, "copy": false, "color": false },
+      "props": { "balance": 3200, "threshold": 10000, "unit": "金币", "withdraw_label": "提现" },
+      "qa_rules": ["Keep inner child coordinates from AssetImage contract."]
+    },
+    {
+      "id": "gameplay",
+      "component": "SpinWheelImagePair",
+      "strictness": "semi_strict",
+      "locked": { "structure": true, "size": true, "position": true, "copy": false, "color": false },
+      "props": { "wheel_body": "spin-wheel-brazil-body.svg", "pointer": "spin-wheel-pointer.svg" },
+      "qa_rules": ["Use one rotating wheel-body image and one fixed pointer image."]
+    }
+  ],
+  "layout_slots": {
+    "background_slot": { "x": 0, "y": 0, "width": 390, "height": 844 },
+    "title_art_box": { "x": 11, "y": 60, "width": 368, "height": 96 },
+    "asset_card_box": { "x": 32, "y": 188, "width": 326, "height": 120 },
+    "gameplay_asset_box": { "x": 32, "y": 342, "width": 326, "height": 326 },
+    "bottom_actions_box": { "x": 0, "y": 668, "width": 390, "height": 120 },
+    "reserved_gaps": [
+      {
+        "id": "gameplay_vertical_center_gap",
+        "from": "asset_card_box",
+        "to": "bottom_actions_box",
+        "rule": "Gameplay asset is vertically centered between the vault and bottom action group."
+      }
+    ]
+  },
+  "content_config": {
+    "title": "桑巴足球幸运转盘",
+    "reward": {
+      "balance": 3200,
+      "threshold": 10000,
+      "unit": "金币",
+      "draw_rewards": [1200, 800, 300, 1200, 500, 2000, 600, 100, 900]
+    },
+    "cta": {
+      "primary": "抽奖",
+      "left": "更多\n机会",
+      "right": "活动\n规则",
+      "withdraw": "提现"
+    },
+    "timer": {
+      "label": "倒计时：",
+      "initial_seconds": 279840
+    },
+    "share": {
+      "enabled": true,
+      "entry": "left_action"
+    }
+  },
+  "implementation": {
+    "stack": ["HTML", "CSS", "JavaScript"],
+    "entry_file": "examples/h5/brazil-samba-football-spin-wheel.html",
+    "generated_files": [
+      "examples/h5/brazil-samba-football-spin-wheel.html",
+      "examples/h5/assets/bg-brazil-samba-football.svg",
+      "examples/h5/assets/title-brazil-samba-football.svg",
+      "examples/h5/assets/spin-wheel-brazil-body.svg"
+    ],
+    "asset_directory": "examples/h5/assets"
+  },
+  "asset_generation_plan": {
+    "visual_direction": "Brazil samba football field with green, yellow, blue, trophy-like coin accents, and a large football-themed spin wheel.",
+    "asset_slots": ["background_slot", "title_art_box", "gameplay_asset_box"]
+  },
+  "qa_requirements": [
+    "One dominant gameplay CTA.",
+    "Countdown is driven by code and clamps at zero.",
+    "Coin rewards add to the vault balance after each draw.",
+    "Canvas scales down at 320px."
+  ],
+  "assumptions": [
+    "The campaign can use Portuguese CTA labels for Brazil.",
+    "原型页提现门槛设为 10000 金币。"
+  ],
+  "open_questions": []
+}

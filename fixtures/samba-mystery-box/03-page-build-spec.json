@@ -1,0 +1,118 @@
+{
+  "status": "ready",
+  "page": {
+    "name": "Samba Mystery Box",
+    "framework": "single-gameplay-conversion-page",
+    "delivery": "H5",
+    "file": "examples/h5/samba-mystery-box-page.html",
+    "language_rule": "All visible user-facing copy is English unless localization is explicitly requested."
+  },
+  "component_reuse_map": [
+    {
+      "module": "top_navigation",
+      "component": "TopNavigation",
+      "source": "component-library/components/top-navigation/component.md",
+      "figmaNode": "331:13637",
+      "reuseStatus": "used_in_example_code"
+    },
+    {
+      "module": "primary_title",
+      "component": "PrimaryTitle",
+      "source": "component-library/components/primary-title/component.md",
+      "reuseStatus": "used_in_example_code"
+    },
+    {
+      "module": "progress_withdraw_card",
+      "component": "AssetCard",
+      "source": "component-library/components/asset-card/component.md",
+      "figmaNode": "309-12053",
+      "reuseStatus": "used_in_example_code"
+    },
+    {
+      "module": "main_gameplay",
+      "component": "custom five-box blind-box gameplay",
+      "source": "custom: AI_DESIGNED",
+      "reuseStatus": "custom_gap",
+      "gapReason": "No catalog component covers five cumulative mystery boxes with locked, ready, opening, opened, and easter egg states."
+    },
+    {
+      "module": "action_single_button",
+      "component": "single action button pattern",
+      "source": "component-library/components/bottom-action-triple/component.md",
+      "figmaNode": "326-14409",
+      "reuseStatus": "used_in_example_code"
+    },
+    {
+      "module": "share_panel",
+      "component": "SharePanel",
+      "source": "component-library/components/share-panel",
+      "figmaNode": "332-15383",
+      "reuseStatus": "used_existing_component_files"
+    },
+    {
+      "module": "toast",
+      "component": "Toast",
+      "source": "component-library/components/toast/component.md",
+      "reuseStatus": "used_in_example_code"
+    },
+    {
+      "module": "reward_result_dialog",
+      "component": "Dialog",
+      "source": "component-library/components/dialog/component.md",
+      "figmaNode": "521:22331",
+      "reuseStatus": "used_in_example_code",
+      "usageRule": "Opening a box and receiving Points uses Dialog with explicit reward amount, not Toast."
+    }
+  ],
+  "primary_link": {
+    "states": [
+      "landing",
+      "guide_share_panel",
+      "invite_settled",
+      "box_unlock_ready",
+      "box_opening",
+      "reward_result_dialog",
+      "points_credited",
+      "easter_egg_or_continue_inviting",
+      "withdraw_ready"
+    ],
+    "triggers": [
+      "first entry opens guide SharePanel once",
+      "primary CTA opens SharePanel",
+      "share channel click simulates valid invite settlement",
+      "threshold invite count unlocks a box",
+      "box click opens unlocked box and then opens reward result Dialog",
+      "1% probability opens jackpot layer"
+    ],
+    "finalConversion": "Invite more friends or withdraw when R$ 5 threshold is met."
+  },
+  "assets": {
+    "formatRule": "Icons may be SVG. Background, title art, gameplay boxes, drum, easter egg, and share guide image are PNG.",
+    "files": [
+      "examples/h5/assets/samba-mystery-box/bg_samba_night.png",
+      "examples/h5/assets/samba-mystery-box/title_samba_mystery.png",
+      "examples/h5/assets/samba-mystery-box/drum_glow.png",
+      "examples/h5/assets/samba-mystery-box/box_locked.png",
+      "examples/h5/assets/samba-mystery-box/box_opened.png",
+      "examples/h5/assets/samba-mystery-box/box_worldcup_locked.png",
+      "examples/h5/assets/samba-mystery-box/box_worldcup_opened.png",
+      "examples/h5/assets/samba-mystery-box/egg_easter.png",
+      "examples/h5/assets/samba-mystery-box/share-panel/samba-mystery-guide.png"
+    ]
+  },
+  "constraints": {
+    "typography_locked": true,
+    "spacing_locked": true,
+    "component_level_changes": ["color", "image"],
+    "no_new_layout_structure": true,
+    "component_library_runtime_code": "Do not place runtime code under component-library; example usage code lives in examples."
+  },
+  "qa_notes": [
+    "TopNavigation preserves status bar, nav row, back action, two right actions, and title area.",
+    "AssetCard progress bar shows withdrawal threshold progress toward R$ 5. Box unlock progress stays in the gameplay area copy and box states.",
+    "SharePanel share sheet uses existing component files and keeps channel area locked.",
+    "Reward result uses the Dialog component from Figma node 521:22331 and explicitly displays the earned Points amount. Toast is not used for reward-result feedback.",
+    "Gameplay is the only custom component gap.",
+    "Main interaction path is implemented with invite settlement, unlock, opening, points credit, and jackpot feedback."
+  ]
+}

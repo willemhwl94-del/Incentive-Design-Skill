@@ -1,0 +1,7 @@
+interface:
+  display_name: "Incentive Strategy Planner"
+  short_description: "Plan fission and incentive page strategy"
+  brand_color: "#16A34A"
+  default_prompt: "Use $incentive-strategy-planner to analyze this campaign request and produce a StrategyBrief."
+policy:
+  allow_implicit_invocation: true

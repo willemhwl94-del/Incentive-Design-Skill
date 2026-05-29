@@ -1,0 +1,318 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "page_build_spec",
+  "producer_skill": "vibe-activity-page",
+  "target_skill": "final_delivery",
+  "status": "ready",
+  "source_strategy_summary": {
+    "target_user": {
+      "segment": "new_users",
+      "age": "",
+      "gender": "",
+      "identity": "",
+      "traits": []
+    },
+    "region": "Brazil",
+    "campaign_goal": "new_user_acquisition",
+    "page_structure": {
+      "type": "single-gameplay-conversion-page",
+      "contents": [
+        {
+          "id": "header_area",
+          "name": "Head Area",
+          "description": "Introduce the campaign and create urgency.",
+          "fixed": false
+        },
+        {
+          "id": "reward_status_card",
+          "name": "Reward Status Card",
+          "description": "Show current balance, withdrawal threshold, progress, and redeem action.",
+          "fixed": true
+        },
+        {
+          "id": "gameplay_area",
+          "name": "Gameplay Area",
+          "description": "Main single gameplay interaction selected by the page builder.",
+          "fixed": false
+        },
+        {
+          "id": "action_area",
+          "name": "Action Area",
+          "description": "Bottom action group for more chances, primary action, QR or share entry, and chance count.",
+          "fixed": true
+        }
+      ]
+    },
+    "selected_gameplay": "golden_egg"
+  },
+  "canvas": {
+    "width": 390,
+    "height": 844,
+    "baseline_width": 390,
+    "responsive_behavior": "scale_canvas_for_narrower_viewports",
+    "safe_area": {
+      "top": 0,
+      "right": 0,
+      "bottom": 0,
+      "left": 0
+    }
+  },
+  "page_architecture": {
+    "framework": "single-gameplay-conversion-page",
+    "sections": [
+      {
+        "id": "top_navigation",
+        "role": "navigation",
+        "component": "TopNavigation",
+        "fixed": true,
+        "order": 1
+      },
+      {
+        "id": "title",
+        "role": "campaign_identity",
+        "component": "PrimaryTitle",
+        "fixed": false,
+        "order": 2
+      },
+      {
+        "id": "asset_card",
+        "role": "cashout_progress",
+        "component": "AssetImage",
+        "fixed": true,
+        "order": 3
+      },
+      {
+        "id": "gameplay",
+        "role": "main_interaction",
+        "component": "GameplayAsset",
+        "fixed": false,
+        "order": 4
+      },
+      {
+        "id": "bottom_actions",
+        "role": "conversion_actions",
+        "component": "BottomActionTriple",
+        "fixed": true,
+        "order": 5
+      }
+    ],
+    "primary_flow": [
+      "Title",
+      "Cashout progress",
+      "Gameplay",
+      "Invite CTA",
+      "Share panel"
+    ]
+  },
+  "component_contracts": [
+    {
+      "id": "asset_card",
+      "component": "AssetImage",
+      "strictness": "strict",
+      "source": "Figma AssetImage contract",
+      "locked": {
+        "structure": true,
+        "size": true,
+        "position": true,
+        "copy": true,
+        "color": false
+      },
+      "props": {
+        "balance": 80000,
+        "threshold": 100000,
+        "near_goal_copy": "Only 20,000 to go"
+      },
+      "qa_rules": [
+        "Do not change inner structure unless user explicitly requests it."
+      ]
+    },
+    {
+      "id": "bottom_actions",
+      "component": "BottomActionTriple",
+      "strictness": "strict",
+      "source": "Figma ButtonImage1 and side button contracts",
+      "locked": {
+        "structure": true,
+        "size": true,
+        "position": true,
+        "copy": true,
+        "color": false
+      },
+      "props": {
+        "left": "More Chances",
+        "center": "Invite Friends",
+        "right": "QR Code",
+        "chance_text": "1 chance left"
+      },
+      "qa_rules": [
+        "All button text must be horizontally and vertically centered.",
+        "Side buttons must stay inside the canvas."
+      ]
+    },
+    {
+      "id": "gameplay",
+      "component": "GameplayAsset",
+      "strictness": "semi_strict",
+      "locked": {
+        "structure": true,
+        "size": true,
+        "position": true,
+        "copy": true,
+        "color": false
+      },
+      "props": {
+        "gameplay_type": "golden_egg"
+      },
+      "qa_rules": [
+        "Use one image element.",
+        "Do not place text inside the gameplay asset.",
+        "Keep 20px horizontal margin."
+      ]
+    }
+  ],
+  "layout_slots": {
+    "background_slot": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 844
+    },
+    "title_art_box": {
+      "x": 48,
+      "y": 76,
+      "width": 294,
+      "height": 104
+    },
+    "asset_card_box": {
+      "x": 28,
+      "y": 190,
+      "width": 334,
+      "height": 126
+    },
+    "gameplay_asset_box": {
+      "x": 20,
+      "y": 322,
+      "width": 350,
+      "height": 326
+    },
+    "bottom_actions_box": {
+      "x": 0,
+      "y": 666,
+      "width": 390,
+      "height": 142
+    },
+    "reserved_gaps": [
+      {
+        "id": "gameplay_vertical_center_gap",
+        "from": "asset_card_box",
+        "to": "bottom_actions_box",
+        "rule": "Gameplay asset must be vertically centered in the available gap and must not overlap either UI block."
+      }
+    ]
+  },
+  "content_config": {
+    "title": "Invite Friends Win Gifts",
+    "reward": {
+      "balance": 80000,
+      "threshold": 100000,
+      "unit": "coins"
+    },
+    "cta": {
+      "primary": "Invite Friends",
+      "left": "More Chances",
+      "right": "QR Code"
+    },
+    "timer": {
+      "enabled": true,
+      "duration_seconds": 86400,
+      "prefix": "Expires in"
+    },
+    "share": {
+      "enabled": true,
+      "trigger": "primary_cta"
+    }
+  },
+  "implementation": {
+    "stack": [
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ],
+    "entry_file": "/Users/bytedance/Documents/Incentive Page Cases/brazil-new-user/index.html",
+    "generated_files": [
+      "/Users/bytedance/Documents/Incentive Page Cases/brazil-new-user/index.html"
+    ],
+    "asset_directory": "/Users/bytedance/Documents/Incentive Page Cases/brazil-new-user/assets",
+    "dependencies": []
+  },
+  "asset_generation_plan": {
+    "visual_freedom": [
+      "background artwork",
+      "title art treatment",
+      "gameplay asset style",
+      "color palette"
+    ],
+    "asset_requests": [
+      {
+        "id": "background",
+        "type": "full_screen_image",
+        "slot": "background_slot",
+        "dimensions": {
+          "width": 390,
+          "height": 844
+        },
+        "requirements": [
+          "Single full-screen image",
+          "No abrupt edge cutoffs",
+          "Leave UI readability clear"
+        ]
+      },
+      {
+        "id": "title_art",
+        "type": "raster_title",
+        "slot": "title_art_box",
+        "dimensions": {
+          "width": 294,
+          "height": 104
+        },
+        "requirements": [
+          "Text: Invite Friends Win Gifts",
+          "Transparent background",
+          "Readable at mobile scale"
+        ]
+      },
+      {
+        "id": "gameplay_asset",
+        "type": "transparent_png",
+        "slot": "gameplay_asset_box",
+        "dimensions": {
+          "width": 350,
+          "height": 326
+        },
+        "requirements": [
+          "Golden egg smashing gameplay object",
+          "No text inside the asset",
+          "Minimal transparent padding",
+          "Do not overlap top card or bottom buttons"
+        ]
+      }
+    ],
+    "locked_visual_rules": [
+      "Do not alter strict component geometry",
+      "All UI layers stay above gameplay asset",
+      "Button text remains centered"
+    ]
+  },
+  "qa_requirements": [
+    "gameplay_asset_box_calculated_before_generation",
+    "gameplay_asset_has_no_text",
+    "gameplay_asset_has_20px_horizontal_margin",
+    "bottom_buttons_inside_canvas",
+    "button_text_centered",
+    "chance_text_centered"
+  ],
+  "assumptions": [
+    "Asset box is calculated before gameplay asset generation."
+  ],
+  "open_questions": []
+}

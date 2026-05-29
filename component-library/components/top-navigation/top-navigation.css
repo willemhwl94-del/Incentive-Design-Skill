@@ -1,0 +1,301 @@
+incentive-top-navigation {
+  display: block;
+  width: 390px;
+  height: 91px;
+  position: relative;
+  z-index: 5;
+  font-family: "TikTok Sans", "SF Pro", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0;
+}
+
+incentive-top-navigation[variant="one-dark"],
+incentive-top-navigation[variant="three-dark"] {
+  height: 96px;
+}
+
+.ip-top-navigation {
+  position: relative;
+  width: 390px;
+  height: 91px;
+  color: #000000;
+}
+
+.ip-top-navigation[data-variant="one-dark"],
+.ip-top-navigation[data-variant="three-dark"] {
+  height: 96px;
+}
+
+.ip-top-navigation[data-variant="two-light"] {
+  color: #ffffff;
+}
+
+.ip-top-navigation__status {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 390px;
+  height: 47px;
+}
+
+.ip-top-navigation[data-variant="one-dark"] .ip-top-navigation__status,
+.ip-top-navigation[data-variant="three-dark"] .ip-top-navigation__status {
+  height: 52px;
+}
+
+.ip-top-navigation__time {
+  position: absolute;
+  left: 49.5px;
+  top: 18.5px;
+  width: 41px;
+  height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "SF Pro", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 17px;
+  line-height: 21px;
+  font-weight: 590;
+  white-space: nowrap;
+}
+
+.ip-top-navigation[data-variant="two-dark"] .ip-top-navigation__time,
+.ip-top-navigation[data-variant="two-light"] .ip-top-navigation__time {
+  left: 45px;
+  top: 14px;
+  width: 42px;
+  height: 20px;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 800;
+}
+
+.ip-top-navigation__system-icons {
+  position: absolute;
+  right: 32.86px;
+  top: 22.6px;
+  width: 77.292px;
+  height: 13px;
+}
+
+.ip-top-navigation[data-variant="two-dark"] .ip-top-navigation__system-icons,
+.ip-top-navigation[data-variant="two-light"] .ip-top-navigation__system-icons {
+  right: 28px;
+  top: 16px;
+}
+
+.ip-top-navigation__cellular {
+  position: absolute;
+  left: 0;
+  top: 0.5px;
+  width: 19.054px;
+  height: 12px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.ip-top-navigation__cellular span {
+  display: block;
+  width: 3px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.ip-top-navigation__cellular span:nth-child(1) {
+  height: 4px;
+}
+
+.ip-top-navigation__cellular span:nth-child(2) {
+  height: 6px;
+}
+
+.ip-top-navigation__cellular span:nth-child(3) {
+  height: 9px;
+}
+
+.ip-top-navigation__cellular span:nth-child(4) {
+  height: 12px;
+}
+
+.ip-top-navigation__wifi {
+  position: absolute;
+  left: 26.054px;
+  top: 0.45px;
+  width: 17.011px;
+  height: 12.1px;
+}
+
+.ip-top-navigation__wifi svg,
+.ip-top-navigation__icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ip-top-navigation__battery {
+  position: absolute;
+  left: 50.064px;
+  top: 0;
+  width: 27.228px;
+  height: 13px;
+}
+
+.ip-top-navigation__battery-body {
+  position: absolute;
+  left: 0;
+  top: 1px;
+  width: 24px;
+  height: 11px;
+  border: 1.5px solid currentColor;
+  border-radius: 3.6px;
+}
+
+.ip-top-navigation__battery-fill {
+  position: absolute;
+  left: 3px;
+  top: 4px;
+  width: 15px;
+  height: 5px;
+  border-radius: 1.5px;
+  background: currentColor;
+}
+
+.ip-top-navigation__battery-cap {
+  position: absolute;
+  right: 0;
+  top: 4.2px;
+  width: 2.2px;
+  height: 4.6px;
+  border-radius: 0 1.5px 1.5px 0;
+  background: currentColor;
+}
+
+.ip-top-navigation__row {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 390px;
+  height: 44px;
+}
+
+.ip-top-navigation__back {
+  position: absolute;
+  left: 16px;
+  top: 6px;
+}
+
+.ip-top-navigation__actions {
+  position: absolute;
+  top: 6px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.ip-top-navigation[data-variant="two-dark"] .ip-top-navigation__actions {
+  left: 302px;
+  width: 72px;
+  gap: 8px;
+}
+
+.ip-top-navigation[data-variant="two-light"] .ip-top-navigation__actions {
+  left: 300px;
+  width: 74px;
+  gap: 10px;
+}
+
+.ip-top-navigation[data-variant="three-dark"] .ip-top-navigation__actions {
+  left: 231px;
+  width: 143px;
+  gap: 10px;
+}
+
+.ip-top-navigation[data-variant="one-dark"] .ip-top-navigation__actions {
+  left: 315px;
+  width: 59px;
+  gap: 0;
+}
+
+.ip-top-navigation__title-area {
+  position: absolute;
+  left: 96px;
+  top: 0;
+  width: 213px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ip-top-navigation__title {
+  max-width: 213px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 700;
+}
+
+.ip-top-navigation__button {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ffffff;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.75);
+  color: rgba(0, 0, 0, 0.65);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ip-top-navigation[data-variant="two-dark"] .ip-top-navigation__button {
+  background: rgba(255, 255, 255, 0.6);
+  color: #000000;
+}
+
+.ip-top-navigation[data-variant="two-light"] .ip-top-navigation__button {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.ip-top-navigation__button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.ip-top-navigation__icon {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+
+.ip-top-navigation__more {
+  width: 59px;
+  height: 32px;
+  padding: 6px 12px;
+  border: 1px solid #ffffff;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.75);
+  color: rgba(0, 0, 0, 0.65);
+  font-family: "TikTok Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 18.2px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ip-top-navigation__more:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}

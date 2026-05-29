@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="652" height="652" viewBox="0 0 652 652" fill="none">
+  <circle cx="326" cy="326" r="304" fill="#073B2A"/>
+  <circle cx="326" cy="326" r="286" fill="#FFE24A"/>
+  <g transform="translate(326 326)">
+    <path d="M0 0L0 -260A260 260 0 0 1 183.8 -183.8Z" fill="#19B768"/>
+    <path d="M0 0L183.8 -183.8A260 260 0 0 1 260 0Z" fill="#1C3F97"/>
+    <path d="M0 0L260 0A260 260 0 0 1 183.8 183.8Z" fill="#F6C236"/>
+    <path d="M0 0L183.8 183.8A260 260 0 0 1 0 260Z" fill="#F15B3D"/>
+    <path d="M0 0L0 260A260 260 0 0 1 -183.8 183.8Z" fill="#19B768"/>
+    <path d="M0 0L-183.8 183.8A260 260 0 0 1 -260 0Z" fill="#1C3F97"/>
+    <path d="M0 0L-260 0A260 260 0 0 1 -183.8 -183.8Z" fill="#F6C236"/>
+    <path d="M0 0L-183.8 -183.8A260 260 0 0 1 0 -260Z" fill="#F15B3D"/>
+  </g>
+  <circle cx="326" cy="326" r="238" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-opacity=".7"/>
+  <g font-family="Arial Black, Impact, sans-serif" font-size="40" font-weight="900" text-anchor="middle" fill="#FFFFFF" stroke="#073B2A" stroke-width="5" paint-order="stroke">
+    <text x="326" y="126">800</text>
+    <text x="466" y="185" transform="rotate(45 466 185)">300</text>
+    <text x="526" y="340" transform="rotate(90 526 340)">1200</text>
+    <text x="466" y="492" transform="rotate(135 466 492)">500</text>
+    <text x="326" y="550" transform="rotate(180 326 550)">2000</text>
+    <text x="185" y="492" transform="rotate(225 185 492)">600</text>
+    <text x="126" y="340" transform="rotate(270 126 340)">100</text>
+    <text x="185" y="185" transform="rotate(315 185 185)">900</text>
+  </g>
+  <g>
+    <circle cx="326" cy="326" r="82" fill="#FFE24A" stroke="#073B2A" stroke-width="12"/>
+    <circle cx="326" cy="326" r="52" fill="#FFFFFF"/>
+    <path d="M326 282L339 310L370 314L347 335L354 366L326 350L298 366L305 335L282 314L313 310L326 282Z" fill="#111111"/>
+  </g>
+  <circle cx="326" cy="326" r="304" stroke="#FFFFFF" stroke-width="10" stroke-opacity=".72"/>
+  <g fill="#FFFFFF">
+    <circle cx="326" cy="34" r="11"/>
+    <circle cx="532" cy="120" r="11"/>
+    <circle cx="618" cy="326" r="11"/>
+    <circle cx="532" cy="532" r="11"/>
+    <circle cx="326" cy="618" r="11"/>
+    <circle cx="120" cy="532" r="11"/>
+    <circle cx="34" cy="326" r="11"/>
+    <circle cx="120" cy="120" r="11"/>
+  </g>
+</svg>

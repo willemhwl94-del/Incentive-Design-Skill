@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Samba Mystery Box</title>
+    <link rel="stylesheet" href="../../component-library/components/share-panel/share-panel.css" />
+    <style>
+      * { box-sizing: border-box; }
+      :root {
+        --theme-ink: #06130b;
+        --theme-muted: rgba(6,19,11,.62);
+        --theme-soft-muted: rgba(6,19,11,.48);
+        --theme-page: #f7fbef;
+        --theme-surface: #fffef4;
+        --theme-sky: #e9f6ff;
+        --theme-sky-strong: #2577e6;
+        --theme-grass: #1fa65a;
+        --theme-grass-soft: #dff7df;
+        --theme-yellow: #ffd93b;
+        --theme-yellow-soft: #fff6c6;
+        --theme-coral: #ff6b35;
+      }
+      html, body { margin: 0; min-height: 100%; background: var(--theme-page); font-family: "TikTok Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: 0; }
+      body { display: flex; justify-content: center; color: var(--theme-ink); }
+      button { border: 0; font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+      button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+      .viewport { width: 390px; height: 844px; overflow: hidden; background: var(--theme-page); }
+      .stage { position: relative; width: 390px; height: 844px; overflow: hidden; transform-origin: top left; background: linear-gradient(180deg, #fffbe7 0%, #f0f9ff 44%, #f3fbef 100%); }
+      .stage::before, .stage::after { position: absolute; z-index: 0; pointer-events: none; content: ""; }
+      .stage::before { left: -72px; top: 132px; width: 248px; height: 116px; border-radius: 64px; background: #fff0a8; transform: rotate(-13deg); }
+      .stage::after { right: -92px; top: 540px; width: 268px; height: 132px; border-radius: 72px; background: #c9f5d2; transform: rotate(-18deg); }
+      .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
+      .top-navigation { position: absolute; left: 0; top: 0; z-index: 50; width: 390px; height: 91px; transition: background-color .24s ease; }
+      .top-navigation.is-solid { background: rgba(255,254,244,.9); backdrop-filter: blur(16px); }
+      .system-status-bar { position: absolute; left: 0; top: 0; width: 390px; height: 47px; color: var(--theme-ink); }
+      .top-navigation.is-solid .system-status-bar { color: var(--theme-ink); }
+      .status-time { position: absolute; left: 45px; top: 18.5px; font-size: 15px; line-height: 21px; font-weight: 600; }
+      .status-icons { position: absolute; left: 280px; top: 20px; display: flex; width: 78px; height: 13px; align-items: center; gap: 7px; }
+      .cellular-icon { width: 19px; height: 12px; }
+      .wifi-icon { width: 17px; height: 12px; }
+      .battery-icon { width: 27px; height: 13px; }
+      .nav-row { position: absolute; left: 0; top: 47px; width: 390px; height: 44px; }
+      .nav-mock { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 6px 16px; }
+      .nav-actions { display: flex; width: 74px; height: 32px; align-items: center; justify-content: flex-end; gap: 10px; }
+      .nav-title-area { position: absolute; left: 96px; top: 0; width: 213px; height: 44px; pointer-events: none; }
+      .nav-icon-button { display: flex; width: 32px; height: 32px; align-items: center; justify-content: center; flex: 0 0 32px; padding: 6px; border: 1px solid rgba(31,166,90,.14); border-radius: 99px; background: rgba(255,254,244,.84); color: var(--theme-ink); line-height: 0; box-shadow: 0 8px 18px rgba(31,166,90,.08); }
+      .top-navigation.is-solid .nav-icon-button { border-color: rgba(31,166,90,.14); background: var(--theme-surface); color: var(--theme-ink); }
+      .nav-icon { display: block; width: 20px; height: 20px; flex: 0 0 20px; }
+
+      .primary-title { position: absolute; left: 28px; top: 86px; z-index: 10; display: flex; width: 334px; height: 122px; flex-direction: column; justify-content: center; margin: 0; color: var(--theme-ink); pointer-events: none; font-size: 44px; line-height: 40px; font-weight: 900; letter-spacing: 0; }
+      .primary-title__line { display: block; }
+      .subtitle { position: absolute; left: 32px; top: 210px; z-index: 9; width: 326px; margin: 0; color: var(--theme-muted); text-align: center; font-size: 14px; line-height: 18px; font-weight: 600; }
+      .countdown { position: absolute; left: 116px; top: 236px; z-index: 9; display: flex; width: 158px; height: 32px; align-items: center; justify-content: center; margin: 0; border-radius: 999px; background: var(--theme-sky); color: #155dbd; text-align: center; font-size: 12px; line-height: 16px; font-weight: 600; }
+      .countdown.is-urgent { background: #fff0e8; color: var(--theme-coral); font-weight: 600; }
+      .drum-glow { position: absolute; right: 8px; top: 112px; z-index: 8; width: 92px; height: 92px; opacity: .8; animation: drumPulse 2s ease-in-out infinite; }
+      @keyframes drumPulse { 0%, 100% { transform: scale(.96); opacity: .82; } 50% { transform: scale(1.08); opacity: 1; } }
+
+      .asset-card { position: absolute; left: 32px; top: 284px; z-index: 12; width: 326px; height: 130px; border-radius: 32px; background: rgba(255,254,244,.96); }
+      .asset-info { position: absolute; left: 16px; top: 12px; width: 294px; height: 50px; }
+      .asset-avatar { position: absolute; left: 0; top: 7px; display: block; width: 36px; height: 36px; overflow: hidden; border: 1px solid rgba(255,255,255,.64); border-radius: 50%; background: #e5e6eb; }
+      .asset-avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+      .asset-title { position: absolute; left: 44px; top: 8.5px; width: 156px; height: 11px; margin: 0; color: var(--theme-muted); font-size: 11px; line-height: 11px; font-weight: 600; }
+      .asset-amount { position: absolute; left: 44px; top: 19.5px; display: flex; align-items: baseline; height: 27px; color: var(--theme-ink); white-space: nowrap; }
+      .asset-currency, .asset-value { font-size: 22px; line-height: 26px; font-weight: 900; }
+      .asset-action { position: absolute; right: 0; top: 11px; width: 78px; height: 28px; border-radius: 100px; background: var(--theme-grass-soft); color: var(--theme-ink); font-size: 12px; line-height: 16px; font-weight: 600; }
+      .asset-progress-area { position: absolute; left: 16px; top: 64px; width: 294px; height: 50px; }
+      .asset-progress-copy { position: absolute; left: 4px; top: 13px; width: 196px; height: 18px; margin: 0; color: var(--theme-soft-muted); font-size: 14px; line-height: 18px; font-weight: 400; white-space: nowrap; }
+      .asset-progress-track { position: absolute; left: 4px; top: 35px; width: 230px; height: 12px; border-radius: 16px; background: #edf5e8; }
+      .asset-progress-fill { position: absolute; left: 1px; top: 1px; width: var(--asset-progress, 0%); height: 10px; border-radius: 100px; background: linear-gradient(90deg, var(--theme-yellow), var(--theme-grass)); transition: width .28s ease; }
+      .asset-threshold { position: absolute; right: 4px; top: 0; width: 62px; height: 50px; }
+      .asset-icon { position: absolute; left: 6px; top: 0; display: block; width: 50px; height: 50px; object-fit: contain; }
+      .asset-threshold-pill { position: absolute; left: 0; top: 32px; display: flex; width: 62px; height: 18px; align-items: center; justify-content: center; border-radius: 32px; background: var(--theme-yellow-soft); color: var(--theme-ink); font-size: 10px; line-height: 13px; font-weight: 700; }
+
+      .gameplay { position: absolute; left: 16px; top: 426px; z-index: 8; width: 358px; height: 276px; padding: 16px; border-radius: 32px; background: rgba(255,254,244,.76); }
+      .gameplay-title { margin: 0 0 8px; color: var(--theme-ink); text-align: center; font-size: 17px; line-height: 22px; font-weight: 700; }
+      .box-row { display: grid; width: 326px; height: 148px; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: end; justify-items: center; column-gap: 12px; }
+      .mystery-box { position: relative; display: block; width: 100%; height: 136px; padding: 0; background: transparent; transform-origin: 50% 86%; transition: transform .2s ease, filter .2s ease; }
+      .mystery-box img { position: absolute; left: 50%; top: 4px; display: block; width: 64px; height: 64px; object-fit: contain; transform: translateX(-50%); }
+      .mystery-box__reward { position: absolute; left: 50%; bottom: 0; display: grid; width: 56px; min-height: 52px; place-items: center; padding: 4px; border-radius: 16px; background: var(--theme-yellow-soft); color: var(--theme-ink); transform: translateX(-50%); font-size: 10px; line-height: 12px; font-weight: 700; }
+      .mystery-box.is-locked { filter: grayscale(.48) brightness(1.06) saturate(.86); }
+      .mystery-box.is-ready { animation: readyPulse 1.1s ease-in-out infinite; filter: drop-shadow(0 0 12px rgba(255,217,59,.7)); }
+      .mystery-box.is-opening { animation: boxOpen 1.2s ease both; }
+      @keyframes readyPulse { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-8px) scale(1.06); } }
+      @keyframes boxOpen { 0% { transform: rotate(0) scale(1); } 30% { transform: rotate(-7deg) scale(1.08); } 60% { transform: rotate(7deg) scale(1.1); } 100% { transform: rotate(0) scale(1); } }
+      .gameplay-status { display: grid; width: 326px; height: 46px; place-items: center; margin: 0 0 12px; padding: 0 16px; border-radius: 24px; background: #eaf8d9; color: rgba(6,19,11,.76); text-align: center; font-size: 14px; line-height: 18px; font-weight: 600; }
+      .gameplay-status__text { display: block; width: 100%; text-align: center; }
+      .gameplay-status strong { color: var(--theme-ink); font-weight: 700; }
+
+      .bottom-action { position: absolute; left: 0; bottom: 0; z-index: 30; width: 390px; min-height: 132px; padding: 16px 24px max(34px, env(safe-area-inset-bottom)); background: linear-gradient(180deg, rgba(247,251,239,0), rgba(247,251,239,.92) 28%, rgba(247,251,239,.98)); }
+      .primary-cta { display: flex; width: 342px; height: 56px; align-items: center; justify-content: center; border-radius: 28px; background: var(--theme-grass); color: #fff; font-size: 20px; line-height: 26px; font-weight: 700; box-shadow: 0 10px 24px rgba(31,166,90,.18); }
+      .primary-cta:active { filter: brightness(.92); transform: translateY(1px) scale(.99); box-shadow: 0 6px 16px rgba(31,166,90,.14); }
+      .cta-note { margin: 12px 0 0; color: var(--theme-soft-muted); text-align: center; font-size: 12px; line-height: 16px; font-weight: 400; }
+
+      .toast { position: absolute; left: 50%; top: 50%; z-index: 90; display: flex; width: fit-content; min-width: 108px; max-width: 245px; height: 51px; align-items: center; justify-content: center; padding: 15px 24px; border-radius: 14px; background: rgba(0,0,0,.75); color: #fff; text-align: center; white-space: nowrap; font-family: "PingFang SC", system-ui, sans-serif; font-size: 15px; line-height: 21px; font-weight: 400; opacity: 0; pointer-events: none; transform: translate(-50%, -50%); transition: opacity .18s ease; }
+      .toast.is-visible { opacity: 1; }
+      .toast.is-two-row { width: 245px; height: 72px; white-space: normal; }
+
+      .dialog-layer { position: absolute; inset: 0; z-index: 96; display: none; align-items: center; justify-content: center; background: rgba(6,19,11,.36); border-radius: 24px; }
+      .dialog-layer.is-open { display: flex; }
+      .dialog-shell { display: flex; width: 300px; flex-direction: column; align-items: center; gap: 20px; }
+      .dialog-card { position: relative; display: flex; width: 300px; min-height: 304px; align-items: center; justify-content: center; padding: 40px 0 32px; overflow: hidden; border-radius: 32px; background: var(--theme-surface); color: var(--theme-ink); }
+      .dialog-card::before { position: absolute; left: 0; top: 0; width: 300px; height: 120px; border-radius: 32px 32px 0 0; background: linear-gradient(180deg, rgba(255,217,59,.34), rgba(201,245,210,0)); content: ""; }
+      .dialog-content { position: relative; z-index: 1; display: flex; width: 300px; flex-direction: column; align-items: center; gap: 32px; }
+      .dialog-main { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+      .dialog-title-section { display: flex; width: 300px; flex-direction: column; align-items: center; gap: 8px; padding: 0 24px; text-align: center; word-break: break-word; }
+      .dialog-title-section h2 { width: 100%; margin: 0; color: var(--theme-ink); font-size: 20px; line-height: 25px; font-weight: 700; }
+      .dialog-title-section p { width: 100%; margin: 0; color: var(--theme-muted); font-size: 14px; line-height: 18px; font-weight: 400; }
+      .dialog-reward { display: flex; width: 252px; height: 38px; align-items: center; justify-content: center; gap: 4px; }
+      .dialog-reward-icon { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 50%; background: var(--theme-yellow); color: var(--theme-ink); font-size: 18px; line-height: 18px; font-weight: 900; }
+      .dialog-reward strong { color: var(--theme-ink); font-size: 32px; line-height: 38px; font-weight: 700; white-space: nowrap; }
+      .dialog-action-group { display: flex; width: 300px; justify-content: center; padding: 0 20px; }
+      .dialog-primary { width: 260px; height: 48px; border-radius: 999px; background: var(--theme-grass); color: #fff; font-size: 16px; line-height: 21px; font-weight: 600; }
+      .dialog-primary:active { filter: brightness(.9); }
+      .dialog-close { display: grid; width: 32px; height: 32px; place-items: center; padding: 4px; border-radius: 999px; background: rgba(0,0,0,.5); color: #fff; line-height: 0; }
+      .dialog-close svg { width: 24px; height: 24px; }
+
+      .modal, .easter { position: absolute; inset: 0; z-index: 85; display: none; align-items: flex-end; background: rgba(6,19,11,.28); }
+      .modal.is-open, .easter.is-open { display: flex; }
+      .sheet { width: 390px; padding: 20px 20px max(34px, env(safe-area-inset-bottom)); border-radius: 28px 28px 0 0; background: var(--theme-surface); color: var(--theme-ink); box-shadow: 0 -12px 28px rgba(31,166,90,.14); }
+      .sheet h2 { margin: 0; font-size: 24px; line-height: 30px; font-weight: 700; }
+      .sheet p { margin: 8px 0 0; font-size: 14px; line-height: 18px; font-weight: 400; }
+      .rules-list { margin: 16px 0 0; padding-left: 20px; font-size: 13px; line-height: 17px; font-weight: 400; }
+      .rules-list li { margin: 8px 0; }
+      .close-button, .easter-card button { width: 100%; height: 48px; margin-top: 16px; border-radius: 24px; background: var(--theme-grass-soft); color: var(--theme-ink); font-size: 15px; line-height: 20px; font-weight: 700; }
+      .easter { align-items: center; justify-content: center; background: rgba(255,217,59,.72); }
+      .easter-card { width: 326px; padding: 24px 20px; border-radius: 32px; background: var(--theme-surface); text-align: center; box-shadow: 0 12px 28px rgba(31,166,90,.14); }
+      .easter-card img { width: 132px; height: 132px; }
+      .easter-card h2 { margin: 12px 0 0; font-size: 24px; line-height: 30px; font-weight: 700; }
+      .easter-card p { margin: 8px 0 0; font-size: 14px; line-height: 18px; font-weight: 600; }
+      .easter-card button { background: var(--theme-grass); color: #fff; }
+      .stage > .share-panel { z-index: 95; --tux-sheet-backdrop-1: rgba(6,19,11,.28); --tux-page-grouped-3: #fffef4; --tux-shape-neutral: #1fa65a; --tux-shape-neutral-3: rgba(31,166,90,.14); --tux-text-1: #06130b; --tux-text-2: rgba(6,19,11,.62); }
+
+      @media (max-width: 389px) {
+        .viewport { width: 100vw; height: calc(844px * (100vw / 390)); }
+        .stage { transform: scale(calc(100vw / 390)); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="viewport">
+      <main class="stage" data-framework="single-gameplay-conversion-page">
+        <nav class="top-navigation" data-component="TopNavigation" data-component-source="component-library/components/top-navigation/component.md" data-figma-node="331:13637" aria-label="Top navigation">
+          <div class="system-status-bar" aria-hidden="true">
+            <span class="status-time">8:00</span>
+            <span class="status-icons">
+              <svg class="cellular-icon" viewBox="0 0 19 12"><rect x="0" y="7" width="3" height="5" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg>
+              <svg class="wifi-icon" viewBox="0 0 17 12"><path d="M1 3.9C5.2.1 11.8.1 16 3.9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><path d="M4.1 7C6.5 4.9 10.5 4.9 12.9 7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><path d="M7.2 10.1C7.9 9.5 9.1 9.5 9.8 10.1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"/></svg>
+              <svg class="battery-icon" viewBox="0 0 27 13"><rect x="0.5" y="1" width="22" height="11" rx="3" fill="none" stroke="currentColor"/><rect x="3" y="3.5" width="16" height="6" rx="1.6" fill="currentColor"/><rect x="24" y="4.2" width="2.5" height="4.6" rx="1" fill="currentColor"/></svg>
+            </span>
+          </div>
+          <div class="nav-row">
+            <div class="nav-mock">
+              <button class="nav-icon-button" type="button" data-action="back" aria-label="Back">
+                <svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.2 6.7 10l5.8 5.8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"/></svg>
+              </button>
+              <div class="nav-actions">
+                <button class="nav-icon-button" type="button" data-action="rules" aria-label="Rules">
+                  <svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13.1v-.6c0-1 .5-1.7 1.5-2.4.9-.7 1.4-1.2 1.4-2.1 0-1.2-1-2-2.5-2-1.4 0-2.5.7-3 1.9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"/><circle cx="10" cy="16.1" r="1.2" fill="currentColor"/></svg>
+                </button>
+                <button class="nav-icon-button" type="button" data-action="more" aria-label="More">
+                  <svg class="nav-icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="5" cy="10" r="1.8" fill="currentColor"/><circle cx="10" cy="10" r="1.8" fill="currentColor"/><circle cx="15" cy="10" r="1.8" fill="currentColor"/></svg>
+                </button>
+              </div>
+              <div class="nav-title-area" aria-hidden="true"></div>
+            </div>
+          </div>
+        </nav>
+
+        <h1 class="primary-title" data-component="PrimaryTitle" data-component-source="component-library/components/primary-title/component.md">
+          <span class="primary-title__line">SAMBA</span>
+          <span class="primary-title__line">MYSTERY</span>
+          <span class="primary-title__line">BOX</span>
+        </h1>
+        <p class="subtitle">Invite friends, open boxes</p>
+        <p class="countdown" data-countdown aria-live="polite">T-21d 0h 0m</p>
+        <img class="drum-glow" src="./assets/samba-mystery-box/drum_football.png" alt="" aria-hidden="true" />
+
+        <section class="asset-card" data-component="AssetCard" data-component-source="component-library/components/asset-card/component.md" data-figma-node="309-12053" aria-label="Progress withdraw card">
+          <div class="asset-info">
+            <span class="asset-avatar" aria-hidden="true"><img src="../../component-library/components/asset-card/assets/default-profile.png" alt="" /></span>
+            <p class="asset-title">Points balance</p>
+            <div class="asset-amount"><span class="asset-currency">R$</span><span class="asset-value" data-balance>0.00</span></div>
+            <button class="asset-action" type="button" data-action="withdraw">Withdraw</button>
+          </div>
+          <div class="asset-progress-area">
+            <p class="asset-progress-copy" data-progress-copy>R$ 5.00 until withdrawal</p>
+            <div class="asset-progress-track" aria-hidden="true"><div class="asset-progress-fill" data-progress-fill></div></div>
+            <div class="asset-threshold" aria-hidden="true"><img class="asset-icon" src="../../component-library/components/asset-card/assets/default-asset-icon.png" alt="" /><span class="asset-threshold-pill" data-threshold>R$ 5</span></div>
+          </div>
+        </section>
+
+        <section class="gameplay" data-component="GameplayAsset" data-component-source="custom:five-samba-mystery-boxes" aria-label="Samba mystery boxes">
+          <h2 class="gameplay-title">5 Mystery Boxes</h2>
+          <p class="gameplay-status" data-gameplay-status><span class="gameplay-status__text">Invite 1 friend to light up the first box.</span></p>
+          <div class="box-row" data-box-row></div>
+        </section>
+
+        <section class="bottom-action" data-component="ActionSingleButton" data-component-source="component-library/components/bottom-action-triple/component.md" data-figma-node="326-14409">
+          <button class="primary-cta" type="button" data-action="invite">Invite Friends</button>
+          <p class="cta-note">Share once to unlock the next mystery box.</p>
+        </section>
+        <div class="toast" data-component="Toast" data-component-source="component-library/components/toast/component.md" data-component-variant="toast/one_row" role="status" aria-live="polite"></div>
+
+        <section class="dialog-layer" data-component="Dialog" data-component-source="component-library/components/dialog/component.md" data-figma-node="521:22331" data-reward-dialog role="dialog" aria-modal="true" aria-labelledby="rewardDialogTitle" aria-hidden="true">
+          <div class="dialog-shell">
+            <div class="dialog-card dialog-card--with-image">
+              <div class="dialog-content">
+                <div class="dialog-main">
+                  <div class="dialog-title-section">
+                    <h2 id="rewardDialogTitle">You earned a reward</h2>
+                    <p data-reward-description>Your mystery box opened successfully.</p>
+                  </div>
+                  <div class="dialog-reward" aria-label="Reward amount">
+                    <span class="dialog-reward-icon" aria-hidden="true">P</span>
+                    <strong data-reward-amount>0 Points</strong>
+                  </div>
+                </div>
+                <div class="dialog-action-group">
+                  <button class="dialog-primary" type="button" data-action="close-reward">OK</button>
+                </div>
+              </div>
+            </div>
+            <button class="dialog-close" type="button" data-action="dismiss-reward" aria-label="Close reward dialog">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7.5 7.5 9 9m0-9-9 9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.6"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="modal" data-rules-modal role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+          <div class="sheet">
+            <h2 id="rulesTitle">Rules</h2>
+            <p>Valid invites unlock boxes through cumulative milestones.</p>
+            <ul class="rules-list">
+              <li>Progress does not reset between campaign cycles.</li>
+              <li>From D11, the artwork switches to World Cup boxes and keeps opened progress.</li>
+              <li>Points are credited after risk checks. Withdrawals start from R$ 5.</li>
+              <li>Available for users 18+ and subject to risk controls.</li>
+            </ul>
+            <button class="close-button" type="button" data-action="close-rules">Got it</button>
+          </div>
+        </section>
+
+        <section class="easter" data-easter role="dialog" aria-modal="true" aria-labelledby="eggTitle">
+          <div class="easter-card">
+            <img src="./assets/samba-mystery-box/egg_easter.png" alt="" aria-hidden="true" />
+            <h2 id="eggTitle">Jackpot Samba!</h2>
+            <p>You found the golden box. Global banner activated.</p>
+            <button type="button" data-action="close-easter">Continue</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../component-library/components/share-panel/share-panel.js"></script>
+    <script>
+      const campaignConfig = {
+        dayIndex: 0,
+        countdownSeconds: 21 * 24 * 60 * 60,
+        pointsToBrlRate: 0.01,
+        withdrawMinimumBrl: 5,
+        initialPoints: 0,
+        initialInvites: 0,
+        cta: { first: "Invite Friends", repeat: "Invite More" },
+        assets: {
+          samba: { locked: "./assets/samba-mystery-box/box_locked_imagine2.png", opened: "./assets/samba-mystery-box/box_opened_imagine2.png", progressColor: "#ffd93b" },
+          worldcup: { locked: "./assets/samba-mystery-box/box_worldcup_locked.png", opened: "./assets/samba-mystery-box/box_worldcup_opened.png", progressColor: "#00a859" }
+        },
+        tiers: [
+          { id: "tier1", threshold: 1, min: 100, max: 300 },
+          { id: "tier2", threshold: 3, min: 200, max: 500 },
+          { id: "tier3", threshold: 6, min: 400, max: 800 },
+          { id: "tier4", threshold: 10, min: 600, max: 1200 },
+          { id: "tier5", threshold: 15, min: 1000, max: 2000 }
+        ],
+        shareCopies: [
+          "Open a Samba Mystery Box with me.",
+          "My box is glowing. Join through my invite.",
+          "Sign up, get your bonus, and unlock a box."
+        ]
+      };
+
+      const state = {
+        points: campaignConfig.initialPoints,
+        invites: campaignConfig.initialInvites,
+        opened: new Set(),
+        opening: null,
+        countdownSeconds: campaignConfig.countdownSeconds,
+        invitePanelOpenedOnce: false,
+        firstSharePanelShown: false
+      };
+
+      const elements = {
+        nav: document.querySelector(".top-navigation"),
+        rulesModal: document.querySelector("[data-rules-modal]"),
+        easter: document.querySelector("[data-easter]"),
+        countdown: document.querySelector("[data-countdown]"),
+        balance: document.querySelector("[data-balance]"),
+        progressCopy: document.querySelector("[data-progress-copy]"),
+        progressFill: document.querySelector("[data-progress-fill]"),
+        threshold: document.querySelector("[data-threshold]"),
+        boxRow: document.querySelector("[data-box-row]"),
+        gameplayStatus: document.querySelector("[data-gameplay-status]"),
+        inviteCta: document.querySelector("[data-action='invite']"),
+        rewardDialog: document.querySelector("[data-reward-dialog]"),
+        rewardAmount: document.querySelector("[data-reward-amount]"),
+        rewardDescription: document.querySelector("[data-reward-description]"),
+        toast: document.querySelector("[data-component='Toast']")
+      };
+
+      let pendingRewardFollowup = null;
+
+      const sharePanel = createSharePanel({
+        mount: document.querySelector(".stage"),
+        assetBasePath: "../../component-library/components/share-panel/assets",
+        guideImageUrl: "./assets/samba-mystery-box/share-panel/samba-mystery-guide-brazil.png",
+        instructions: [
+          "Share your invite link with a friend.",
+          "Your friend opens the link and signs up.",
+          "Come back to open a mystery box."
+        ],
+        disclaimer: "* Rewards are credited after risk checks. Available for users above 18 years old.",
+        onShareAction: ({ action, label }) => {
+          if (action === "externalShare") {
+            settleInvite(label);
+            return false;
+          }
+          return true;
+        }
+      });
+
+      function getPhase() {
+        return campaignConfig.dayIndex >= 11 ? campaignConfig.assets.worldcup : campaignConfig.assets.samba;
+      }
+
+      function formatDuration(seconds) {
+        const safe = Math.max(0, seconds);
+        const days = Math.floor(safe / 86400);
+        const hours = Math.floor((safe % 86400) / 3600);
+        const minutes = Math.floor((safe % 3600) / 60);
+        return `T-${days}d ${hours}h ${minutes}m`;
+      }
+
+      function getNextTier() {
+        return campaignConfig.tiers.find((tier) => !state.opened.has(tier.id));
+      }
+
+      function getTierState(tier) {
+        if (state.opened.has(tier.id)) return "opened";
+        if (state.opening === tier.id) return "opening";
+        if (state.invites >= tier.threshold) return "ready";
+        return "locked";
+      }
+
+      function formatPoints(value) {
+        return new Intl.NumberFormat("en-US").format(value);
+      }
+
+      function rewardForTier(tier, index) {
+        const span = tier.max - tier.min;
+        return tier.min + ((state.invites * 73 + index * 137) % Math.max(1, span + 1));
+      }
+
+      function renderBoxes() {
+        const phase = getPhase();
+        elements.boxRow.innerHTML = campaignConfig.tiers.map((tier, index) => {
+          const boxState = getTierState(tier);
+          const image = boxState === "opened" ? phase.opened : phase.locked;
+          const reward = boxState === "opened" ? `Earned ${formatPoints(tier.reward || rewardForTier(tier, index))} Points` : `Invite ${tier.threshold} friend${tier.threshold > 1 ? "s" : ""}`;
+          return `
+            <button class="mystery-box is-${boxState}" type="button" data-tier-id="${tier.id}" aria-label="Box ${index + 1}, ${boxState}">
+              <img src="${image}" alt="" aria-hidden="true" />
+              <span class="mystery-box__reward">${reward}</span>
+            </button>
+          `;
+        }).join("");
+      }
+
+      function renderProgress() {
+        const cashValue = state.points * campaignConfig.pointsToBrlRate;
+        const withdrawalProgress = Math.min(cashValue / campaignConfig.withdrawMinimumBrl, 1);
+        const nextTier = getNextTier();
+        elements.balance.textContent = cashValue.toFixed(2);
+        elements.progressFill.style.setProperty("--asset-progress", `${withdrawalProgress * 100}%`);
+        elements.threshold.textContent = `R$ ${campaignConfig.withdrawMinimumBrl}`;
+        elements.inviteCta.textContent = state.invites >= 1 ? campaignConfig.cta.repeat : campaignConfig.cta.first;
+        const withdrawalGap = Math.max(0, campaignConfig.withdrawMinimumBrl - cashValue);
+        elements.progressCopy.textContent = withdrawalGap > 0 ? `R$ ${withdrawalGap.toFixed(2)} until withdrawal` : "Withdrawal available";
+        if (!nextTier) {
+          elements.gameplayStatus.innerHTML = '<span class="gameplay-status__text">All boxes are open. <strong>Withdraw</strong> is ready.</span>';
+          return;
+        }
+        const remaining = Math.max(0, nextTier.threshold - state.invites);
+        if (remaining === 0) {
+          elements.gameplayStatus.innerHTML = '<span class="gameplay-status__text">A box is glowing. <strong>Tap it to reveal Points.</strong></span>';
+        } else {
+          elements.gameplayStatus.innerHTML = `<span class="gameplay-status__text">Invite <strong>${remaining}</strong> more friend${remaining > 1 ? "s" : ""} to light up the next box.</span>`;
+        }
+      }
+
+      function renderCountdown() {
+        elements.countdown.textContent = formatDuration(state.countdownSeconds);
+        elements.countdown.classList.toggle("is-urgent", state.countdownSeconds <= 86400);
+      }
+
+      function render() {
+        renderBoxes();
+        renderProgress();
+        renderCountdown();
+      }
+
+      function showToast(message) {
+        window.clearTimeout(showToast.timer);
+        elements.toast.textContent = message;
+        const useTwoRow = shouldUseTwoRowToast(message);
+        elements.toast.classList.toggle("is-two-row", useTwoRow);
+        elements.toast.dataset.componentVariant = useTwoRow ? "toast/two_row" : "toast/one_row";
+        elements.toast.classList.add("is-visible");
+        showToast.timer = window.setTimeout(() => elements.toast.classList.remove("is-visible"), 1700);
+      }
+
+      function shouldUseTwoRowToast(message) {
+        if (!showToast.measure) {
+          const measure = document.createElement("span");
+          measure.style.position = "absolute";
+          measure.style.left = "-9999px";
+          measure.style.top = "-9999px";
+          measure.style.visibility = "hidden";
+          measure.style.whiteSpace = "nowrap";
+          measure.style.fontFamily = '"PingFang SC", system-ui, sans-serif';
+          measure.style.fontSize = "15px";
+          measure.style.lineHeight = "21px";
+          measure.style.fontWeight = "400";
+          document.body.appendChild(measure);
+          showToast.measure = measure;
+        }
+        showToast.measure.textContent = message;
+        return showToast.measure.scrollWidth + 48 > 245;
+      }
+
+      function openRewardDialog(reward, onClose) {
+        pendingRewardFollowup = onClose || null;
+        elements.rewardAmount.textContent = `${formatPoints(reward)} Points`;
+        elements.rewardDescription.textContent = "Your mystery box opened successfully. The Points are now in your balance.";
+        elements.rewardDialog.classList.add("is-open");
+        elements.rewardDialog.setAttribute("aria-hidden", "false");
+      }
+
+      function closeRewardDialog() {
+        elements.rewardDialog.classList.remove("is-open");
+        elements.rewardDialog.setAttribute("aria-hidden", "true");
+        const followup = pendingRewardFollowup;
+        pendingRewardFollowup = null;
+        if (followup) followup();
+      }
+
+      function openSharePanel() {
+        state.invitePanelOpenedOnce = true;
+        sharePanel.open();
+      }
+
+      function settleInvite(label) {
+        sharePanel.close();
+        state.invites += 1;
+        showToast(`${label} sent. Invite confirmed +1`);
+        if (navigator.vibrate) navigator.vibrate(20);
+        render();
+      }
+
+      function openTier(tierId) {
+        const tier = campaignConfig.tiers.find((item) => item.id === tierId);
+        if (!tier || getTierState(tier) !== "ready") {
+          showToast("This box is still locked");
+          return;
+        }
+        state.opening = tier.id;
+        render();
+        if (navigator.vibrate) navigator.vibrate([30, 30, 80]);
+        window.setTimeout(() => {
+          const reward = rewardForTier(tier, campaignConfig.tiers.indexOf(tier));
+          tier.reward = reward;
+          state.points += reward;
+          state.opened.add(tier.id);
+          state.opening = null;
+          render();
+          const hitEasterEgg = Math.random() < 0.01;
+          openRewardDialog(reward, () => {
+            if (hitEasterEgg) {
+              elements.easter.classList.add("is-open");
+            } else {
+              window.setTimeout(() => sharePanel.open(), 300);
+            }
+          });
+        }, 1200);
+      }
+
+      document.querySelector("[data-action='back']").addEventListener("click", () => showToast("Returning to the main app"));
+      document.querySelector("[data-action='rules']").addEventListener("click", () => elements.rulesModal.classList.add("is-open"));
+      document.querySelector("[data-action='more']").addEventListener("click", () => showToast("Opening Points wallet"));
+      document.querySelector("[data-action='withdraw']").addEventListener("click", () => {
+        const cashValue = state.points * campaignConfig.pointsToBrlRate;
+        showToast(cashValue >= campaignConfig.withdrawMinimumBrl ? "Withdrawal is available" : "Minimum withdrawal: R$ 5");
+      });
+      document.querySelector("[data-action='invite']").addEventListener("click", openSharePanel);
+      document.querySelector("[data-action='close-rules']").addEventListener("click", () => elements.rulesModal.classList.remove("is-open"));
+      document.querySelector("[data-action='close-reward']").addEventListener("click", closeRewardDialog);
+      document.querySelector("[data-action='dismiss-reward']").addEventListener("click", closeRewardDialog);
+      document.querySelector("[data-action='close-easter']").addEventListener("click", () => {
+        elements.easter.classList.remove("is-open");
+        sharePanel.open();
+      });
+      elements.boxRow.addEventListener("click", (event) => {
+        const box = event.target.closest("[data-tier-id]");
+        if (box) openTier(box.dataset.tierId);
+      });
+      document.addEventListener("scroll", () => {
+        elements.nav.classList.toggle("is-solid", window.scrollY > 8);
+      }, { passive: true });
+
+      render();
+      window.setInterval(() => {
+        state.countdownSeconds = Math.max(0, state.countdownSeconds - 1);
+        renderCountdown();
+      }, 1000);
+      window.setTimeout(() => {
+        if (!state.firstSharePanelShown) {
+          state.firstSharePanelShown = true;
+          sharePanel.open();
+        }
+      }, 700);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "campaign_request",
+  "producer_skill": "campaign-build-orchestrator",
+  "target_skill": "incentive-strategy-planner",
+  "status": "ready",
+  "raw_request": "我想在巴西做一个新用户的拉新的玩法",
+  "region": "Brazil",
+  "audience": "new_users",
+  "business_goal": "new_user_acquisition",
+  "known_constraints": [
+    "mobile_h5",
+    "single_primary_conversion_goal"
+  ],
+  "available_inputs": {
+    "historical_campaign_data": "optional",
+    "brand_constraints": "optional",
+    "visual_references": "optional"
+  },
+  "assumptions": [
+    "The page should optimize for first invite and first gameplay start."
+  ],
+  "open_questions": []
+}
