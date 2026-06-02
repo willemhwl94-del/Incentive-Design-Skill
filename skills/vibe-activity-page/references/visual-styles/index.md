@@ -31,7 +31,6 @@ The selected style must not override strict component layout, component-library 
 | Style | 中文名 | Status | When to use | Read |
 | --- | --- | --- | --- | --- |
 | `soft-colorful-card` | 柔和彩色卡片风 | ready | 浅色调、柔和、长期运营、欧洲/美国等地区活动 | `references/visual-styles/soft-colorful-card.md` |
-| `retro-journal` | 复古手账风 | ready | 日本等地区的长期营销活动 | `references/visual-styles/retro-journal.md` |
 | `dreamy-cloud-campaign` | 梦幻云朵活动页 | ready | 短期激励活动，无明显地区限制 | `references/visual-styles/dreamy-cloud-campaign.md` |
 
 ## Adding Or Updating Styles
